@@ -1,5 +1,5 @@
 {
-  "problem_index": 0,
+  "agent_id": "gemini_solver_1",
   "problem_id": "logic_001",
   "problem": {
     "id": "logic_001",
@@ -19,15 +19,15 @@
   },
   "solver_output": {
     "problem_id": "logic_001",
-    "llm_model": "GPT-4o",
+    "llm_model": "gpt-4o",
     "answer": "red",
     "reasoning": [
-      "Identify the two possible scenarios for the identities of the men: Scenario A (Andrew is in the blue shirt, Bob is in the red shirt) and Scenario B (Andrew is in the red shirt, Bob is in the blue shirt).",
-      "Analyze Scenario A: The man in the blue shirt (Andrew) says 'I am Andrew', which is a true statement. The man in the red shirt (Bob) says 'I am Bob', which is also a true statement.",
-      "Evaluate Scenario A against the constraint: The problem states that 'at least one of them lied'. In Scenario A, both told the truth, so Scenario A is impossible.",
-      "Analyze Scenario B: The man in the blue shirt (Bob) says 'I am Andrew', which is a lie. The man in the red shirt (Andrew) says 'I am Bob', which is also a lie.",
-      "Evaluate Scenario B against the constraint: In Scenario B, both men lied, which satisfies the condition that 'at least one of them lied'.",
-      "Identify Andrew's shirt color in Scenario B: Since Andrew is the man in the red shirt in this scenario, he is wearing red."
+      "Identify the two possible scenarios for the identities of the men: Scenario 1 (Blue shirt is Andrew, Red shirt is Bob) and Scenario 2 (Blue shirt is Bob, Red shirt is Andrew).",
+      "Analyze Scenario 1: The man in the blue shirt says 'I am Andrew' (True) and the man in the red shirt says 'I am Bob' (True).",
+      "Check Scenario 1 against the constraint: The problem states that at least one of them lied. In Scenario 1, both told the truth, so this scenario is impossible.",
+      "Analyze Scenario 2: The man in the blue shirt says 'I am Andrew' (False, because he is Bob) and the man in the red shirt says 'I am Bob' (False, because he is Andrew).",
+      "Check Scenario 2 against the constraint: In Scenario 2, both men lied, which satisfies the condition that at least one of them lied.",
+      "Conclude the identity based on Scenario 2: Since Scenario 2 is the only valid possibility, Andrew must be the man wearing the red shirt."
     ]
   }
 }

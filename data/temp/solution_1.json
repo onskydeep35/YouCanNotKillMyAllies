@@ -1,29 +1,38 @@
 {
-  "problem_index": 1,
-  "problem_id": "logic_002",
+  "agent_id": "gemini_solver_2",
+  "problem_id": "logic_001",
   "problem": {
-    "id": "logic_002",
+    "id": "logic_001",
     "category": "Logic Puzzles & Constraint Satisfaction",
-    "subcategory": "Boxes and Logical Statements",
-    "statement": "There are 3 boxes, exactly one of which has a car. You can keep the car if you pick the correct box.\n\nOn each box there is a statement, exactly one of which is true.\n\nBox 1: \"The car is in this box.\"\nBox 2: \"The car is not in this box.\"\nBox 3: \"The car is not in box 1.\"\n\nWhich box has the car?",
-    "query": "Which box has the car?",
-    "answer": "Box 3",
+    "subcategory": "Truth-tellers and Liars",
+    "statement": "There are two men. One of them is wearing a red shirt, and the other is wearing a blue shirt. The two men are named Andrew and Bob, but we do not know which is Andrew and which is Bob.\n\nThe man in the blue shirt says, \"I am Andrew.\" The man in the red shirt says, \"I am Bob.\"\n\nIf we know that at least one of them lied, then what color shirt is Andrew wearing?",
+    "query": "What color shirt is Andrew wearing?",
+    "answer": "red",
     "full_assignment": {
-      "car_location": "Box 2",
-      "true_statement": "Box 3"
+      "Andrew": {
+        "shirt_color": "red"
+      },
+      "Bob": {
+        "shirt_color": "blue"
+      }
     }
   },
   "solver_output": {
-    "problem_id": "logic_002",
-    "llm_model": "gpt-4o",
-    "answer": "Box 2",
+    "problem_id": "logic_001",
+    "llm_model": "T5-Large-Solver",
+    "answer": "red",
     "reasoning": [
-      "Identify the three statements: Statement 1 (Box 1): 'The car is in this box.', Statement 2 (Box 2): 'The car is not in this box.', Statement 3 (Box 3): 'The car is not in box 1.'",
-      "Identify the constraint: Exactly one of the statements is true, and only one box contains the car.",
-      "Evaluate Case 1: The car is in Box 1. In this case, Statement 1 is true. Statement 2 is also true because the car is in Box 1 and therefore not in Box 2. Statement 3 is false because the car is in Box 1. This results in two true statements (S1 and S2), which violates the constraint.",
-      "Evaluate Case 2: The car is in Box 2. In this case, Statement 1 is false. Statement 2 is false because the car is in Box 2, making the statement 'The car is not in this box' incorrect. Statement 3 is true because the car is indeed not in Box 1. This results in exactly one true statement (S3), which satisfies the constraint.",
-      "Evaluate Case 3: The car is in Box 3. In this case, Statement 1 is false. Statement 2 is true because the car is in Box 3 and therefore not in Box 2. Statement 3 is true because the car is indeed not in Box 1. This results in two true statements (S2 and S3), which violates the constraint.",
-      "Conclusion: Case 2 is the only scenario where exactly one statement is true. Therefore, the car must be in Box 2."
+      "Identify the two individuals based on their shirt colors: Man_Blue (wearing blue) and Man_Red (wearing red). Their names are Andrew and Bob.",
+      "Analyze the statements: Man_Blue says 'I am Andrew'. Man_Red says 'I am Bob'.",
+      "Analyze the condition: We are told that at least one of the men lied.",
+      "Evaluate Scenario A: Assume Man_Blue is Andrew. Consequently, Man_Red must be Bob.",
+      "Check truthfulness in Scenario A: If Man_Blue is Andrew, his statement 'I am Andrew' is True. If Man_Red is Bob, his statement 'I am Bob' is True.",
+      "Test Scenario A against the condition: Since both statements are True, the condition 'at least one lied' is not met. Thus, Scenario A is impossible.",
+      "Evaluate Scenario B: Assume Man_Blue is Bob. Consequently, Man_Red must be Andrew.",
+      "Check truthfulness in Scenario B: If Man_Blue is Bob, his statement 'I am Andrew' is False (a lie). If Man_Red is Andrew, his statement 'I am Bob' is False (a lie).",
+      "Test Scenario B against the condition: Since both men lied, the condition 'at least one lied' is satisfied.",
+      "Determine the result: Since Scenario B is the only valid possibility, Man_Red corresponds to Andrew.",
+      "Final Answer: Andrew is wearing the red shirt."
     ]
   }
 }

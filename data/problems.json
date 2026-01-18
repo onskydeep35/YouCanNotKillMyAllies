@@ -57,5 +57,36 @@
       }
     },
     "difficulty": "hard"
+  },
+  {
+    "id": "logic_005",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Truth-tellers and Liars (Numeric Constraints)",
+    "problem_statement": "It is known that octopuses with 7 legs always lie, while those with 6 legs and those with 8 legs always tell the truth.\n\nOne night, four octopuses met:\n\nGreen: \"We have 27 legs.\"\nBlack: \"We have 28 legs.\"\nRed: \"We have 25 legs.\"\nYellow: \"We have 26 legs.\"",
+    "ground_truth": {
+      "query": "Which octopus is telling the truth?",
+      "answer": "Green",
+      "full_assignment": {
+        "truth_teller": "Green",
+        "total_legs": 27
+      }
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "logic_006",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Knights, Knaves, and Spy",
+    "problem_statement": "On the island of Knights and Knaves, I met three people A, B, and C, one of whom is a knight, another is a knave, and the other is a spy. The knight always tells the truth, the knave always lies, and the spy can either lie or tell the truth.\n\nA says: \"I am the knight.\"\nB says: \"I am the knave.\"\nC says: \"I am the spy.\"",
+    "ground_truth": {
+      "query": "Who is the spy?",
+      "answer": "B",
+      "full_assignment": {
+        "A": "knight",
+        "B": "spy",
+        "C": "knave"
+      }
+    },
+    "difficulty": "medium"
   }
 ]
