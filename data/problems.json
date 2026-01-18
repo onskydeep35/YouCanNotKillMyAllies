@@ -1,0 +1,21 @@
+[
+  {
+    "id": "logic_001",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Truth-tellers and Liars",
+    "problem_statement": "There are two men. One of them is wearing a red shirt, and the other is wearing a blue shirt. The two men are named Andrew and Bob, but we do not know which is Andrew and which is Bob.\n\nThe man in the blue shirt says, \"I am Andrew.\" The man in the red shirt says, \"I am Bob.\"\n\nIf we know that at least one of them lied, then what color shirt is Andrew wearing?",
+    "ground_truth": {
+      "query": "What color shirt is Andrew wearing?",
+      "answer": "red",
+      "full_assignment": {
+        "Andrew": {
+          "shirt_color": "red"
+        },
+        "Bob": {
+          "shirt_color": "blue"
+        }
+      }
+    },
+    "difficulty": "easy"
+  }
+]
