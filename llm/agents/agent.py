@@ -31,7 +31,7 @@ class LLMAgent(ABC):
             output_model=output_model,
             timeout_sec=timeout_sec,
             log_interval_sec=log_interval_sec,
-            instance_id=problem.id,
+            instance_id=problem.problem_id,
             method_type=method_type,
         )
 

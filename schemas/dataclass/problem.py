@@ -4,7 +4,7 @@ from typing import Dict, Optional
 
 @dataclass
 class Problem:
-    id: str
+    problem_id: str
     category: str
     subcategory: Optional[str]
     statement: str
@@ -14,7 +14,7 @@ class Problem:
     @staticmethod
     def from_dict(data: Dict) -> "Problem":
         return Problem(
-            id=data["id"],
+            problem_id=data["id"],
             category=data["category"],
             subcategory=data.get("subcategory"),
             statement=data["problem_statement"],
@@ -25,7 +25,7 @@ class Problem:
     @staticmethod
     def to_dict(self) -> dict:
         return {
-            "id": self.id,
+            "id": self.problem_id,
             "statement": self.statement,
             "metadata": self.metadata,
         }

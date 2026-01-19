@@ -1,29 +1,67 @@
 import asyncio
 from pathlib import Path
 
-from pipeline.debating_pipeline import DebatingPipeline
+from runtime.app import ProblemSolvingApp
+from schemas.dataclass.agent_config import LLMAgentConfig
 
-PROBLEMS_PATH = "data/datasets/problems.json"
-PROBLEMS_SKIP = 3
-PROBLEMS_TAKE = 1
 
-async def main_async():
-    problems_path = Path(PROBLEMS_PATH)
-    if not problems_path.exists():
-        raise FileNotFoundError(f"Problems file not found: {problems_path}")
+def create_llm_configs():
+    """
+    2 OpenAI + 2 Gemini agents with different reasoning styles.
+    """
+    return [
+        # -----------------
+        # OpenAI
+        # -----------------
+        LLMAgentConfig(
+            provider="openai",
+            llm_id="gpt-4.1",
+            model="gpt-4.1",
+            temperature=0.2,
+            top_p=0.85,
+        ),
+        LLMAgentConfig(
+            provider="openai",
+            llm_id="gpt-5-mini",
+            model="gpt-5-mini",
+            # temperature=0.7,
+            # top_p=0.95,
+        ),
 
-    pipeline = DebatingPipeline(
-        problems_path=str(problems_path),
-        problems_skip=PROBLEMS_SKIP,
-        problems_take=PROBLEMS_TAKE,
+        # -----------------
+        # Gemini
+        # -----------------
+        LLMAgentConfig(
+            provider="gemini",
+            llm_id="gemini-3-pro",
+            model="gemini-3-pro-preview",
+            temperature=0.3,
+            top_p=0.9,
+        ),
+        LLMAgentConfig(
+            provider="gemini",
+            llm_id="gemini-3-flash",
+            model="gemini-3-flash-preview",
+            temperature=0.8,
+            top_p=0.95,
+        ),
+    ]
+
+
+async def main():
+    app = ProblemSolvingApp(
+        problems_path=Path("data/datasets/problems.json"),
+        agent_configs=create_llm_configs(),
+        problems_skip=0,
+        problems_take=1,
+        output_dir=Path("data/output"),
     )
 
-    await pipeline.run()
-
-
-def main():
-    asyncio.run(main_async())
+    await app.run(
+        timeout_sec=2000,
+        log_interval_sec=10,
+    )
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
