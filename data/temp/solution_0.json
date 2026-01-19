@@ -1,33 +1,31 @@
 {
-  "agent_id": "gemini_solver_1",
-  "problem_id": "logic_001",
+  "agent_id": "gemini-3-pro",
+  "assigned_role": "Solver",
+  "problem_id": "logic_006",
   "problem": {
-    "id": "logic_001",
+    "id": "logic_006",
     "category": "Logic Puzzles & Constraint Satisfaction",
-    "subcategory": "Truth-tellers and Liars",
-    "statement": "There are two men. One of them is wearing a red shirt, and the other is wearing a blue shirt. The two men are named Andrew and Bob, but we do not know which is Andrew and which is Bob.\n\nThe man in the blue shirt says, \"I am Andrew.\" The man in the red shirt says, \"I am Bob.\"\n\nIf we know that at least one of them lied, then what color shirt is Andrew wearing?",
-    "query": "What color shirt is Andrew wearing?",
-    "answer": "red",
-    "full_assignment": {
-      "Andrew": {
-        "shirt_color": "red"
-      },
-      "Bob": {
-        "shirt_color": "blue"
-      }
-    }
+    "subcategory": "Truthfulness",
+    "statement": "On the island of Knights and Knaves, I met three people A, B, and C, one of whom is a knight, another is a knave, and the other is a spy. The knight always tells the truth, the knave always lies, and the spy can either lie or tell the truth.\n\nA says: \"I am the knight.\"\nB says: \"I am the knave.\"\nC says: \"I am the spy.\"",
+    "ground_answer": "B",
+    "difficulty": "medium"
   },
   "solver_output": {
-    "problem_id": "logic_001",
-    "llm_model": "gpt-4o",
-    "answer": "red",
+    "answer": "B",
     "reasoning": [
-      "Identify the two possible scenarios for the identities of the men: Scenario 1 (Blue shirt is Andrew, Red shirt is Bob) and Scenario 2 (Blue shirt is Bob, Red shirt is Andrew).",
-      "Analyze Scenario 1: The man in the blue shirt says 'I am Andrew' (True) and the man in the red shirt says 'I am Bob' (True).",
-      "Check Scenario 1 against the constraint: The problem states that at least one of them lied. In Scenario 1, both told the truth, so this scenario is impossible.",
-      "Analyze Scenario 2: The man in the blue shirt says 'I am Andrew' (False, because he is Bob) and the man in the red shirt says 'I am Bob' (False, because he is Andrew).",
-      "Check Scenario 2 against the constraint: In Scenario 2, both men lied, which satisfies the condition that at least one of them lied.",
-      "Conclude the identity based on Scenario 2: Since Scenario 2 is the only valid possibility, Andrew must be the man wearing the red shirt."
+      "Analyze the statement made by B: 'I am the knave.'",
+      "If B were a Knight, the statement would be false (since Knights are not Knaves), but Knights always tell the truth. Thus, B cannot be a Knight.",
+      "If B were a Knave, the statement would be true (since B would be a Knave), but Knaves always lie. Thus, B cannot be a Knave.",
+      "Since B is neither a Knight nor a Knave, B must be the Spy.",
+      "Since B is the Spy, A and C must be the Knight and the Knave (in some order).",
+      "Analyze the statement made by C: 'I am the spy.'",
+      "If C were the Knight, the statement 'I am the spy' would be a lie. Since Knights always tell the truth, C cannot be the Knight.",
+      "Therefore, C must be the Knave.",
+      "Since C is the Knave, C's statement 'I am the spy' is false, which is consistent with a Knave's behavior.",
+      "By elimination, A must be the Knight.",
+      "Check A's statement: 'I am the knight.' Since A is the Knight, this is true, which is consistent.",
+      "The roles are: A is the Knight, B is the Spy, C is the Knave.",
+      "Assuming the implicit question is 'Who is the spy?' (based on the standard puzzle format and the deduction of B as the unique pivot), the answer is B."
     ]
   }
 }

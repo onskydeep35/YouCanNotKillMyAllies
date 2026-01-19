@@ -2,11 +2,12 @@ import asyncio
 import time
 from typing import Type, TypeVar
 
-from llm.models.problem import Problem
-from llm.models.solver_output import SolverOutput
+from llm.models.dataclass.problem import Problem
+from llm.models.pydantic.problem_solution import ProblemSolution
 from llm.prompts import build_solver_user_prompt
-from llm.models.agent_config import *
-from llm.models.role_assessment import *
+from llm.models.dataclass.agent_config import *
+from llm.models.pydantic.role_assessment import *
+from llm.models.pydantic.problem_solution_judgement import *
 
 T = TypeVar("T")  # for structured LLM outputs
 
@@ -58,7 +59,6 @@ class LLMAgent:
                     {"role": "user", "parts": [{"text": user_prompt}]},
                 ],
                 config={
-                    # 🔒 ALWAYS from config
                     "temperature": self.config.temperature,
                     "top_p": self.config.top_p,
                     "response_mime_type": "application/json",
@@ -131,7 +131,7 @@ class LLMAgent:
         system_prompt: str,
         timeout_sec: int = 2000,
         log_interval_sec: int = 5,
-    ) -> SolverOutput:
+    ) -> ProblemSolution:
         """
         Solve a problem using the given system prompt.
         """
@@ -141,7 +141,7 @@ class LLMAgent:
             return await self._run_llm_call(
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
-                output_model=SolverOutput,
+                output_model=ProblemSolution,
                 timeout_sec=timeout_sec,
                 log_interval_sec=log_interval_sec,
                 problem_id=problem.id,
@@ -153,7 +153,7 @@ class LLMAgent:
                 f"problem={problem.id} after {timeout_sec}s\n"
             )
 
-            return SolverOutput(
+            return ProblemSolution(
                 problem_id=problem.id,
                 llm_model=self.config.model,
                 answer="TIMEOUT",
@@ -161,3 +161,37 @@ class LLMAgent:
                     "Solver timed out before producing an answer."
                 ],
             )
+
+    async def JudgeProblemSolution(
+            self,
+            *,
+            problem: Problem,
+            solution: ProblemSolution
+    ) -> ProblemSolutionJudgement:
+            system_prompt = (
+                "You are a strict peer reviewer evaluating another solver's solution.\n"
+                "Critically evaluate the solution, identify strengths, weaknesses, "
+                "errors, and suggest improvements. "
+                "Return ONLY valid JSON matching the specified schema."
+            )
+
+            user_prompt = f"""
+    PROBLEM:
+    {problem.problem_statement}
+
+    SOLUTION ANSWER:
+    {solution.answer}
+
+    SOLUTION REASONING:
+    {solution.reasoning}
+    """
+
+            response = await self.client.complete(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                response_model=ProblemSolutionJudgement,
+                temperature=0.4,  # allow critique diversity
+                top_p=0.9,
+            )
+
+            return response
