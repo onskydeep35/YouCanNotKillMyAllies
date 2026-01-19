@@ -8,9 +8,8 @@ class Problem:
     category: str
     subcategory: Optional[str]
     statement: str
-    query: str
-    answer: str
-    full_assignment: Optional[Dict]
+    ground_answer: str
+    difficulty: str
 
     @staticmethod
     def from_dict(data: Dict) -> "Problem":
@@ -19,9 +18,8 @@ class Problem:
             category=data["category"],
             subcategory=data.get("subcategory"),
             statement=data["problem_statement"],
-            query=data["ground_truth"]["query"],
-            answer=data["ground_truth"]["answer"],
-            full_assignment=data["ground_truth"].get("full_assignment"),
+            ground_answer=data["ground_answer"],
+            difficulty=data["difficulty"]
         )
 
     @staticmethod

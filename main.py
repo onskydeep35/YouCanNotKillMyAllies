@@ -1,80 +1,28 @@
-import json
 import asyncio
 from pathlib import Path
-from dotenv import load_dotenv
 
-from models.problem import Problem
-from models.roles import LLMRolePreference
-from llm.client import create_gemini_client
-from llm.solver import solve_problem
+from pipeline.debating_pipeline import DebatingPipeline
 
+PROBLEMS_PATH = "data/problems.json"
+PROBLEMS_SKIP = 3
+PROBLEMS_TAKE = 1
 
-# -------------------------
-# Helpers
-# -------------------------
-def load_problems(path: str) -> list[Problem]:
-    with open(path, "r", encoding="utf-8") as f:
-        raw = json.load(f)
-    return [Problem.from_dict(p) for p in raw]
+async def main_async():
+    problems_path = Path(PROBLEMS_PATH)
+    if not problems_path.exists():
+        raise FileNotFoundError(f"Problems file not found: {problems_path}")
 
-
-def ensure_output_dir(path: str) -> None:
-    Path(path).mkdir(parents=True, exist_ok=True)
-
-
-def write_solution(output_dir: str, index: int, problem: Problem, solver_output: str):
-    payload = {
-        "problem_index": index,
-        "problem_id": getattr(problem, "id", None),
-        "problem": problem.__dict__,
-        "solver_output": solver_output,
-    }
-
-    out_path = Path(output_dir) / f"solution_{index}.json"
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(payload, f, ensure_ascii=False, indent=2)
-
-
-# -------------------------
-# Async runner
-# -------------------------
-async def run():
-    load_dotenv()
-
-    problems = load_problems("data/problems.json")
-    problems = problems[1:2]
-    ensure_output_dir("data/temp")
-
-    client = create_gemini_client()
-
-    solver_role = LLMRolePreference(
-        role_preferences=["Solver"],
-        confidence_by_role={"Solver": 0.9},
-        reasoning="Solve the problem using precise logical reasoning.",
+    pipeline = DebatingPipeline(
+        problems_path=str(problems_path),
+        problems_skip=PROBLEMS_SKIP,
+        problems_take=PROBLEMS_TAKE,
     )
 
-    # Limit concurrent LLM calls (VERY important)
-    semaphore = asyncio.Semaphore(4)
-
-    async def sem_solve(problem: Problem):
-        async with semaphore:
-            return await solve_problem(client, problem, solver_role)
-
-    tasks = [sem_solve(problem) for problem in problems]
-
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-
-    for idx, (problem, result) in enumerate(zip(problems, results)):
-        if isinstance(result, Exception):
-            print(f"[FAIL] problem={problem.id} error={result}")
-            continue
-
-        write_solution("data/temp", idx, problem, result)
-        print(f"[OK] solution_{idx}.json written")
+    await pipeline.run()
 
 
 def main():
-    asyncio.run(run())
+    asyncio.run(main_async())
 
 
 if __name__ == "__main__":
