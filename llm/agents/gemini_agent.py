@@ -19,6 +19,8 @@ class GeminiAgent(LLMAgent):
         method_type: str,
         instance_id: str,
     ) -> T:
+        gen_kwargs = self._build_generation_kwargs()
+
         response = self.client.models.generate_content(
             model=self.config.model,
             contents=[
@@ -26,12 +28,12 @@ class GeminiAgent(LLMAgent):
                 {"role": "user", "parts": [{"text": user_prompt}]},
             ],
             config={
-                "temperature": self.config.temperature,
-                "top_p": self.config.top_p,
+                **gen_kwargs,
                 "response_mime_type": "application/json",
                 "response_json_schema": output_model.model_json_schema(),
             },
         )
+
 
         print(
             f"\n[RAW GEMINI OUTPUT] "

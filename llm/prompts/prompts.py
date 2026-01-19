@@ -140,4 +140,61 @@ def build_solver_user_prompt(problem: Problem) -> str:
         - Still explain where reasoning becomes uncertain.
     """
 
+PEER_REVIEW_SYSTEM_PROMPT = """
+You are an expert peer reviewer evaluating another AI's solution.
+
+Your task is to critically evaluate the solution for correctness, logical validity,
+completeness, and clarity.
+
+Rules:
+- Do NOT restate the solution.
+- Do NOT re-solve the problem from scratch.
+- Focus on identifying flaws, missing cases, unjustified steps, or inconsistencies.
+- Be precise and structured.
+- If the solution is correct, explicitly state why no critical errors exist.
+- Output ONLY valid JSON matching the given schema.
+""".strip()
+
+from schemas.pydantic.problem_solution import *
+
+def build_peer_review_user_prompt(
+    *,
+    problem: Problem,
+    solution: ProblemSolution
+) -> str:
+    """
+    Build peer-review user prompt for one reviewer → one reviewee.
+    """
+
+    reasoning_block = "\n".join(
+        f"{idx+1}. {step}"
+        for idx, step in enumerate(solution.reasoning)
+    )
+
+    return f"""
+PROBLEM:
+{problem.statement}
+
+SOLUTION ANSWER:
+{solution.answer}
+
+SOLUTION REASONING:
+{reasoning_block}
+
+TASK:
+You are reviewer .
+
+Evaluate the solution above.
+
+- Identify strengths in the reasoning.
+- Identify weaknesses or unclear steps.
+- Identify any logical, mathematical, or conceptual errors.
+- Suggest specific improvements if needed.
+- Give an overall assessment of correctness.
+
+Be strict but fair.
+""".strip()
+
+
+
 

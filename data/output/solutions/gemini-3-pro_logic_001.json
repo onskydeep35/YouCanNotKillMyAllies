@@ -1,0 +1,16 @@
+{
+  "run_id": "aca172bd57e445e8bd8810a35a00ff5f",
+  "problem_id": "logic_001",
+  "solver_llm_model_id": "gemini-3-pro",
+  "time_elapsed_sec": 10.781999999999243,
+  "answer": "Red",
+  "reasoning": [
+    "Identify the two possible scenarios for the identities of the men: Scenario 1 is that the man in the blue shirt is Andrew and the man in the red shirt is Bob. Scenario 2 is that the man in the blue shirt is Bob and the man in the red shirt is Andrew.",
+    "Analyze the statements made in Scenario 1. The man in the blue shirt says 'I am Andrew.' If he is Andrew, this is True. The man in the red shirt says 'I am Bob.' If he is Bob, this is True.",
+    "Check Scenario 1 against the given constraint. The constraint states that 'at least one of them lied.' In Scenario 1, both statements are True. Therefore, Scenario 1 violates the constraint and is impossible.",
+    "Analyze the statements made in Scenario 2. The man in the blue shirt says 'I am Andrew.' If he is Bob, this is False (a lie). The man in the red shirt says 'I am Bob.' If he is Andrew, this is False (a lie).",
+    "Check Scenario 2 against the given constraint. In this scenario, both men lied. This satisfies the condition that 'at least one of them lied.' Therefore, Scenario 2 is the correct state of affairs.",
+    "Determine Andrew's shirt color based on Scenario 2. In this scenario, the man in the red shirt is Andrew.",
+    "Conclude that Andrew is wearing a red shirt."
+  ]
+}

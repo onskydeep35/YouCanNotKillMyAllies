@@ -20,25 +20,26 @@ class OpenAIAgent(LLMAgent):
         method_type: str,
         instance_id: str,
     ) -> T:
+        gen_kwargs = self._build_generation_kwargs()
+
         response = self.client.responses.parse(
             model=self.config.model,
             input=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            temperature=self.config.temperature,
-            top_p=self.config.top_p,
-            text_format=output_model
+            text_format=output_model,
+            **gen_kwargs,   # ← generic kwargs
         )
 
-        text = response.output_text
 
         print(
             f"\n[RAW OPENAI OUTPUT] "
             f"agent={self.config.llm_id} "
             f"method={method_type} "
             f"instance={instance_id}\n"
-            f"{text}\n"
+            f"{response.output_text}\n"
         )
+
 
         return response.output_parsed
