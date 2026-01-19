@@ -1,13 +1,12 @@
 import asyncio
-from typing import List, Dict
+from typing import List
 
-from llm.agent import LLMAgent
-from llm.models.dataclass.problem import Problem
-from llm.models.pydantic.problem_solution import ProblemSolution
+from llm.agents.agent import LLMAgent
+from schemas.dataclass.problem import Problem
 from pipeline.run_context import RunContext
 
-from data.firestore_writer import FirestoreWriter
-from data.firestore_writer import SOLUTIONS, PEER_REVIEWS
+from data.persistence.firestore_writer import FirestoreWriter
+
 
 class PeerReviewStage:
     def __init__(

@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pipeline.debating_pipeline import DebatingPipeline
 
-PROBLEMS_PATH = "data/problems.json"
+PROBLEMS_PATH = "data/datasets/problems.json"
 PROBLEMS_SKIP = 3
 PROBLEMS_TAKE = 1
 

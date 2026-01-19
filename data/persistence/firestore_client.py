@@ -11,7 +11,7 @@ _firestore_db = None
 
 def get_firestore_client():
     """
-    Returns a singleton Firestore client.
+    Returns a singleton Firestore clients.
     Safe to call multiple times.
     """
     global _firestore_db
@@ -26,7 +26,7 @@ def get_firestore_client():
         raise RuntimeError("FIREBASE_CREDENTIALS env var not set")
 
     # Resolve path relative to project root
-    base_dir = Path(__file__).resolve().parents[1]
+    base_dir = Path(__file__).resolve().parents[2]
     cred_file = base_dir / cred_path
 
     if not cred_file.exists():

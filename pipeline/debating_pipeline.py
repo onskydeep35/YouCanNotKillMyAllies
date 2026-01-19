@@ -4,17 +4,17 @@ from typing import List
 
 from dotenv import load_dotenv
 
-from llm.agent import LLMAgent
-from llm.client import create_gemini_client
-from llm.models.dataclass.problem import Problem
-from llm.models.dataclass.agent_config import LLMAgentConfig
+from llm.agents.agent import LLMAgent
+from llm.agents.agent_factory import AgentFactory
+from schemas.dataclass.problem import Problem
+from schemas.dataclass.agent_config import LLMAgentConfig
 
 from pipeline.run_context import RunContext
 from pipeline.stages.role_determination_stage import RoleDeterminationStage
 from pipeline.stages.problem_solver_stage import SolverStage
 
-from data.firestore_client import get_firestore_client
-from data.firestore_writer import FirestoreWriter
+from data.persistence.firestore_client import get_firestore_client
+from data.persistence.firestore_writer import FirestoreWriter
 
 
 class DebatingPipeline:
@@ -43,41 +43,48 @@ class DebatingPipeline:
         ][self.problems_skip : self.problems_skip + self.problems_take]
 
     def create_agents(self) -> None:
-        client = create_gemini_client()
         configs = self.create_llm_configs()
-        self.agents = [
-            LLMAgent(client=client, config=cfg)
-            for cfg in configs
-        ]
+        self.agents = AgentFactory.create_agents(configs)
 
     @staticmethod
     def create_llm_configs() -> List[LLMAgentConfig]:
+        """
+        2 Gemini + 2 OpenAI agents with different reasoning styles.
+        """
         return [
+            # -----------------
+            # OpenAI
+            # -----------------
             LLMAgentConfig(
-                llm_id="pro_conservative",
-                model="gemini-3-pro-preview",
+                provider="openai",
+                llm_id="gpt41_conservative",
+                model="gpt-4.1",
                 temperature=0.2,
                 top_p=0.85,
             ),
-
             LLMAgentConfig(
-                llm_id="pro_exploratory",
+                provider="openai",
+                llm_id="gpt5_mini_exploratory",
+                model="gpt-5-mini",
+                temperature=0.7,
+                top_p=0.95,
+            ),
+
+            # -----------------
+            # Gemini
+            # -----------------
+            LLMAgentConfig(
+                provider="gemini",
+                llm_id="gemini_pro_reasoned",
                 model="gemini-3-pro-preview",
-                temperature=0.5,
+                temperature=0.3,
                 top_p=0.9,
             ),
-
             LLMAgentConfig(
-                llm_id="flash_low_var",
+                provider="gemini",
+                llm_id="gemini_flash_creative",
                 model="gemini-3-flash-preview",
-                temperature=0.3,
-                top_p=0.85,
-            ),
-
-            LLMAgentConfig(
-                llm_id="flash_high_var",
-                model="gemini-3-flash-preview",
-                temperature=0.7,
+                temperature=0.8,
                 top_p=0.95,
             ),
         ]
@@ -109,7 +116,7 @@ class DebatingPipeline:
                 f"==========\n"
             )
 
-            # New context per problem
+            # New context per problem (isolated + debuggable)
             ctx = RunContext(run_id=f"{idx}-{problem.id}")
 
             # Stage 0: role determination

@@ -1,9 +1,9 @@
 import asyncio
 from typing import List
 
-from llm.agent import LLMAgent
-from llm.models.dataclass.problem import Problem
-from llm.models.pydantic.role_assessment import RoleAssessment
+from llm.agents.agent import LLMAgent
+from schemas.dataclass.problem import Problem
+from schemas.pydantic.role_assessment import RoleAssessment
 from pipeline.run_context import RunContext
 from llm.prompts import (
     ROLE_DETERMINATION_SYSTEM_PROMPT,
@@ -83,12 +83,15 @@ class RoleDeterminationStage:
         Deterministic role assignment for this problem.
         """
 
+        def solver_score(a: RoleAssessment) -> float:
+            for rs in a.role_scores:
+                if rs.role == "Solver":
+                    return rs.score
+            return 0.
+
         sorted_assessments = sorted(
             assessments,
-            key=lambda a: (
-                a.role_scores.get("Solver", 0.0),
-                a.llm_id,
-            ),
+            key=lambda a: solver_score(a),
             reverse=True,
         )
 

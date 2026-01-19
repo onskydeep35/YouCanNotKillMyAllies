@@ -28,7 +28,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 # ---------- Load problems.json ----------
-with open("../problems.json", "r", encoding="utf-8") as f:
+with open("../../datasets/problems.json", "r", encoding="utf-8") as f:
     problems = json.load(f)
 
 # ---------- Upload to Firestore ----------

@@ -2,15 +2,15 @@ import asyncio
 from typing import List
 import json
 
-from llm.agent import LLMAgent
-from llm.models.dataclass.problem import Problem
-from llm.models.pydantic.problem_solution import ProblemSolution
+from llm.agents.agent import LLMAgent
+from schemas.dataclass.problem import Problem
+from schemas.pydantic.problem_solution import ProblemSolution
 from llm.prompts import (
     build_solver_system_prompt,
     build_solver_user_prompt,
 )
 from pipeline.run_context import RunContext
-from data.firestore_writer import FirestoreWriter, SOLUTIONS
+from data.persistence.firestore_writer import FirestoreWriter, SOLUTIONS
 
 
 class SolverStage:

@@ -1,5 +1,3 @@
-from llm.models.dataclass.problem import *
-
 DEFAULT_SOLVER_POLICY = """
     You are a general-purpose problem solver.
     
@@ -69,7 +67,7 @@ SOLVER_PROMPT_BY_CATEGORY: dict[str, str] = {
 
 # prompts/role_determination.py
 
-from llm.models.dataclass.problem import Problem
+from schemas.dataclass.problem import Problem
 
 
 ROLE_DETERMINATION_SYSTEM_PROMPT = """
