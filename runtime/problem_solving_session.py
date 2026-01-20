@@ -2,6 +2,7 @@ import asyncio
 import json
 from pathlib import Path
 from typing import List, Optional
+from datetime import datetime
 
 from llm.agents.agent import LLMAgent
 from schemas.pydantic.problem import Problem
@@ -16,7 +17,8 @@ from data.persistence.firestore_writer import (
     SOLUTION_REVIEWS,
     REFINED_SOLUTIONS,
     ROLE_ASSESSMENTS,
-    FINAL_JUDGEMENTS
+    FINAL_JUDGEMENTS,
+    RUNS
 )
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
@@ -59,6 +61,8 @@ class ProblemSolvingSession:
 
         print(f"[SESSION START] problem={self.problem.problem_id}")
 
+        await self._persist_run()
+
         await self._assign_roles(
             timeout_sec=timeout_sec,
             log_interval_sec=log_interval_sec,
@@ -85,6 +89,18 @@ class ProblemSolvingSession:
         )
 
         print(f"[SESSION END] problem={self.problem.problem_id}")
+
+    async def _persist_run(self):
+        document = {
+            "run_id": self.run_id,
+            "timestamp": datetime.now(),
+        }
+
+        await self.writer.write(
+            collection=RUNS,
+            document=document,
+            document_id=self.run_id
+        )
 
     # -------------------------
     # Stage 0: Role assignment
