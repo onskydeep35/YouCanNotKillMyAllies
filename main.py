@@ -52,7 +52,7 @@ async def main():
     app = ProblemSolvingApp(
         problems_path=Path("data/datasets/problems.json"),
         agent_configs=create_llm_configs(),
-        problems_skip=0,
+        problems_skip=2,
         problems_take=1,
         output_dir=Path("data/output"),
     )

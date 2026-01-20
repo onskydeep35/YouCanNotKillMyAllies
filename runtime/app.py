@@ -7,12 +7,12 @@ from dotenv import load_dotenv
 
 from llm.agents.agent import LLMAgent
 from llm.agents.agent_factory import AgentFactory
-from schemas.dataclass.problem import Problem
+from schemas.pydantic.problem import Problem
 from schemas.dataclass.agent_config import LLMAgentConfig
 from data.persistence.firestore_client import get_firestore_client
 from data.persistence.firestore_writer import FirestoreWriter
 
-from runtime.contexts.problem_solving_session import ProblemSolvingSession  # single-problem session
+from runtime.problem_solving_session import ProblemSolvingSession  # single-problem session
 
 
 class ProblemSolvingApp:
@@ -51,13 +51,13 @@ class ProblemSolvingApp:
     def load_problems(self) -> None:
         raw = json.loads(self.problems_path.read_text())
 
-        problems = [Problem.from_dict(p) for p in raw]
+        problems = [Problem.model_validate(p) for p in raw]
 
         if self.problems_skip:
-            problems = problems[self.problems_skip :]
+            problems = problems[self.problems_skip:]
 
         if self.problems_take is not None:
-            problems = problems[: self.problems_take]
+            problems = problems[:self.problems_take]
 
         self.problems = problems
 

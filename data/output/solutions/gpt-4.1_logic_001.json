@@ -1,19 +1,18 @@
 {
-  "run_id": "aca172bd57e445e8bd8810a35a00ff5f",
+  "run_id": "45fc6c82290348bc8b8ffeb35d3efbc4",
   "problem_id": "logic_001",
   "solver_llm_model_id": "gpt-4.1",
-  "time_elapsed_sec": 7.640999999999622,
+  "time_elapsed_sec": 4.046999999998661,
   "answer": "red",
   "reasoning": [
     "Let B = man in blue shirt, R = man in red shirt.",
     "Let us assign names: either B is Andrew and R is Bob, or B is Bob and R is Andrew.",
     "B says: 'I am Andrew.' R says: 'I am Bob.'",
     "Case 1: B is Andrew, R is Bob.",
-    "Then B's statement ('I am Andrew') is true, R's statement ('I am Bob') is true. Both are telling the truth. But the problem says at least one lied. Contradicts the condition.",
+    "Then B says 'I am Andrew' (truth), R says 'I am Bob' (truth). Both tell the truth. But the problem says at least one lied. So this case is impossible.",
     "Case 2: B is Bob, R is Andrew.",
-    "Then B's statement ('I am Andrew') is false (since he is Bob), so B is lying. R's statement ('I am Bob') is also false (since he is Andrew), so R is lying.",
-    "In this case, both are lying, which satisfies 'at least one lied.'",
-    "Therefore, the only possible assignment is B is Bob (blue shirt is Bob), R is Andrew (red shirt is Andrew).",
+    "Then B says 'I am Andrew' (lie), R says 'I am Bob' (lie). Both are lying. This satisfies the condition that at least one lied.",
+    "Therefore, the only possible assignment is: B is Bob, R is Andrew.",
     "Thus, Andrew is wearing the red shirt."
   ]
 }

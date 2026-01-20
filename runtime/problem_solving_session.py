@@ -5,14 +5,15 @@ from pathlib import Path
 from typing import List
 
 from llm.agents.agent import LLMAgent
-from schemas.dataclass.problem import Problem
+from schemas.pydantic.problem import Problem
 from schemas.pydantic.role_assessment import RoleAssessment
-from schemas.pydantic.problem_solution import ProblemSolution
 from schemas.pydantic.problem_solution_review import ProblemSolutionReview
+from schemas.pydantic.refined_problem_solution import RefinedProblemSolution
 from data.persistence.firestore_writer import (
     FirestoreWriter,
     SOLUTIONS,
-    PEER_REVIEWS,
+    SOLUTION_REVIEWS,
+    REFINED_SOLUTIONS
 )
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
@@ -53,10 +54,10 @@ class ProblemSolvingSession:
     # Public API
     # -------------------------
     async def run(
-        self,
-        *,
-        timeout_sec: int,
-        log_interval_sec: int,
+            self,
+            *,
+            timeout_sec: int,
+            log_interval_sec: int,
     ) -> None:
 
         print(f"[SESSION START] problem={self.problem.problem_id}")
@@ -72,6 +73,11 @@ class ProblemSolvingSession:
         )
 
         await self._run_peer_reviews(
+            timeout_sec=timeout_sec,
+            log_interval_sec=log_interval_sec,
+        )
+
+        await self._run_refinements(
             timeout_sec=timeout_sec,
             log_interval_sec=log_interval_sec,
         )
@@ -234,7 +240,7 @@ class ProblemSolvingSession:
                 }
 
                 await self.writer.write(
-                    collection=PEER_REVIEWS,
+                    collection=SOLUTION_REVIEWS,
                     document=document,
                 )
 
@@ -261,3 +267,62 @@ class ProblemSolvingSession:
         )
 
         print("[PEER REVIEW COMPLETE]")
+
+    async def _run_refinements(
+            self,
+            *,
+            timeout_sec: int,
+            log_interval_sec: int,
+    ) -> None:
+
+        print("[REFINEMENT START]")
+
+        refined_dir = self.output_dir / "refined_solutions"
+        refined_dir.mkdir(parents=True, exist_ok=True)
+
+        async def refine(ctx: SolverAgentContext) -> None:
+            async with self.semaphore:
+                if not ctx.peer_reviews:
+                    print(
+                        f"[REFINEMENT SKIPPED] solver={ctx.solver_id} (no peer reviews)"
+                    )
+                    return
+
+                refined: RefinedProblemSolution = await ctx.refine_solution(
+                    timeout_sec=timeout_sec,
+                    log_interval_sec=log_interval_sec,
+                )
+
+                document = {
+                    "run_id": refined.run_id,
+                    "problem_id": refined.problem_id,
+                    "solver_llm_model_id": refined.solver_llm_model_id,
+                    "parent_solution_id": refined.parent_solution_id,
+                    "refined_solution_id": refined.refined_solution_id,
+                    "review_ids": refined.review_ids,
+                    "time_elapsed_sec": refined.time_elapsed_sec,
+                    **refined.model_dump(),
+                }
+
+                print("[REFINED SOLUTION DOCUMENT]", document)
+
+                await self.writer.write(
+                    collection=REFINED_SOLUTIONS,
+                    document=document,
+                )
+
+                file_path = (
+                        refined_dir /
+                        f"{ctx.solver_id}_{self.problem.problem_id}.json"
+                )
+
+                file_path.write_text(
+                    json.dumps(document, indent=2, ensure_ascii=False),
+                    encoding="utf-8",
+                )
+
+        await asyncio.gather(
+            *[refine(ctx) for ctx in self.solver_contexts]
+        )
+
+        print("[REFINEMENT COMPLETE]")

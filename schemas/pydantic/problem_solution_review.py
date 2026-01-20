@@ -3,7 +3,15 @@ from pydantic import BaseModel, Field
 
 
 class ReviewError(BaseModel):
-    location: str              # "Step 5", "Assumption about Mike", etc.
+    """
+    Represents a concrete error identified in a peer's solution.
+    """
+
+    location: str = Field(
+        ...,
+        description="Where the error occurs in the solution (e.g., 'Step 5', 'Initial assumption', 'Case n=0')"
+    )
+
     error_type: Literal[
         "logical_error",
         "missing_case",
@@ -11,47 +19,113 @@ class ReviewError(BaseModel):
         "math_error",
         "inconsistency",
         "unclear_reasoning"
-    ]
-    description: str
-    severity: Literal["minor", "major", "critical"]
+    ] = Field(
+        ...,
+        description="Category of the error detected in the solution"
+    )
+
+    description: str = Field(
+        ...,
+        description="Detailed explanation of why this is an error"
+    )
+
+    severity: Literal["minor", "major", "critical"] = Field(
+        ...,
+        description="Impact level of the error on the solution's correctness"
+    )
+
 
 class PeerEvaluation(BaseModel):
-    strengths: list[str]
-    weaknesses: list[str]
-    errors: list[ReviewError]
-    suggested_changes: list[str]
+    """
+    Structured qualitative and quantitative evaluation of a peer's solution.
+    """
+
+    strengths: List[str] = Field(
+        ...,
+        description="Aspects of the solution that are correct, clear, or well-reasoned"
+    )
+
+    weaknesses: List[str] = Field(
+        ...,
+        description="Identified weaknesses that reduce clarity, rigor, or correctness"
+    )
+
+    errors: List[ReviewError] = Field(
+        ...,
+        description="Explicitly identified errors found in the solution"
+    )
+
+    suggested_changes: List[str] = Field(
+        ...,
+        description="Concrete suggestions for improving or fixing the solution"
+    )
+
 
 class ProblemSolutionReview(BaseModel):
-    review_id: str | None = Field(
+    """
+    Complete peer review of a solver's solution produced during Stage 2.
+    """
+
+    review_id: Optional[str] = Field(
         default=None,
-        exclude=True
-    )
-    run_id: str | None = Field(
-        default=None,
-        exclude=True
-    )
-    problem_id: str| None = Field(
-        default=None,
-        exclude=True
+        exclude=True,
+        description="Internal identifier for the review (excluded from model output)"
     )
 
-    reviewer_id: str | None = Field(
+    run_id: Optional[str] = Field(
         default=None,
-        exclude=True
-    )
-    reviewee_id: str | None = Field(
-        default=None,
-        exclude=True
+        exclude=True,
+        description="Identifier for the system run or experiment instance"
     )
 
-    evaluation: PeerEvaluation
+    solution_id: Optional[str] = Field(
+        default=None,
+        exclude=True,
+        description="Identifier of the reviewed solution"
+    )
+
+    problem_id: Optional[str] = Field(
+        default=None,
+        exclude=True,
+        description="Identifier of the problem being reviewed"
+    )
+
+    reviewer_id: Optional[str] = Field(
+        default=None,
+        exclude=True,
+        description="Identifier of the solver acting as the reviewer"
+    )
+
+    reviewee_id: Optional[str] = Field(
+        default=None,
+        exclude=True,
+        description="Identifier of the solver whose solution is being reviewed"
+    )
+
+    time_elapsed_sec: Optional[float] = Field(
+        default=None,
+        exclude=True,
+        description="Time taken to produce this review (in seconds)"
+    )
+
+    evaluation: PeerEvaluation = Field(
+        ...,
+        description="Structured evaluation containing strengths, weaknesses, errors, and suggestions"
+    )
 
     overall_assessment: Literal[
         "correct",
         "mostly_correct",
         "promising_but_flawed",
         "incorrect"
-    ]
+    ] = Field(
+        ...,
+        description="High-level judgment of the solution's correctness"
+    )
 
-    confidence_score: float   # 0.0–1.0 reviewer confidence
-    time_elapsed_sec: float | None = None
+    confidence: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="Reviewer's confidence in the overall assessment (0–1)"
+    )

@@ -3,11 +3,9 @@ from typing import Optional, Dict, Any
 # Core experiment collections
 RUNS = "Runs"
 ROLE_ASSESSMENTS = "RoleAssessments"
-ROLE_ASSIGNMENTS = "RoleAssignments"
 SOLUTIONS = "Solutions"
-PEER_REVIEWS = "PeerReviews"
-REFINEMENTS = "Refinements"
-JUDGMENTS = "Judgments"
+SOLUTION_REVIEWS = "SolutionReviews"
+REFINED_SOLUTIONS = "RefinedSolutions"
 METRICS = "Metrics"
 
 class FirestoreWriter:

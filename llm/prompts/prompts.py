@@ -1,3 +1,7 @@
+from schemas.pydantic.problem import *
+from schemas.pydantic.problem_solution_review import *
+
+
 DEFAULT_SOLVER_POLICY = """
     You are a general-purpose problem solver.
     
@@ -65,10 +69,6 @@ SOLVER_PROMPT_BY_CATEGORY: dict[str, str] = {
         """,
 }
 
-# prompts/role_determination.py
-
-from schemas.dataclass.problem import Problem
-
 
 ROLE_DETERMINATION_SYSTEM_PROMPT = """
 You are an AI agent participating in a multi-agent collaborative reasoning system.
@@ -107,24 +107,36 @@ def build_solver_system_prompt(*, category: str) -> str:
     policy = SOLVER_PROMPT_BY_CATEGORY.get(category, DEFAULT_SOLVER_POLICY)
 
     return f"""
-        You are an AI agent participating in a multi-agent reasoning system.
-        
-        ROLE:
-        Solver
-        
-        CATEGORY:
-        {category}
-        
-        ROLE GUIDELINES:
-        {policy}
-        
-        GLOBAL RULES (MANDATORY):
-        - Follow the Solver role strictly.
-        - Do not assume missing information.
-        - Do not include extra fields beyond the JSON schema.
-        - Do not output markdown or commentary.
-        - If uncertain, explicitly state uncertainty in reasoning.
-    """
+You are an AI agent participating in a multi-agent reasoning system.
+
+ROLE:
+Solver
+
+CATEGORY:
+{category}
+
+ROLE GUIDELINES:
+{policy}
+
+ANSWER STYLE REQUIREMENT:
+- When the problem asks for a specific answer (e.g., a name, option, value, or label),
+  output ONLY the answer itself.
+- Do NOT add explanations, justifications, or restatements in the answer field.
+- The answer should be minimal and test-style.
+
+Example:
+- Query: Out of Green, Brown, Yellow students who is telling the truth?
+  Correct answer format: Green
+  Incorrect answer format: "Brown is telling the truth because ..."
+
+GLOBAL RULES (MANDATORY):
+- Follow the Solver role strictly.
+- Do not assume missing information.
+- Do not include extra fields beyond the JSON schema.
+- Do not output markdown or commentary.
+- If uncertain, explicitly state uncertainty in reasoning.
+""".strip()
+
 
 def build_solver_user_prompt(problem: Problem) -> str:
     return f"""
@@ -135,6 +147,7 @@ def build_solver_user_prompt(problem: Problem) -> str:
         {problem.statement}
         
         IMPORTANT:
+        - Generate final answer after you finish solving the problem with reasoning.
         - If a correct solution cannot be derived with confidence,
           return "answer": "UNSURE".
         - Still explain where reasoning becomes uncertain.
@@ -155,7 +168,9 @@ Rules:
 - Output ONLY valid JSON matching the given schema.
 """.strip()
 
+import json
 from schemas.pydantic.problem_solution import *
+
 
 def build_peer_review_user_prompt(
     *,
@@ -164,36 +179,94 @@ def build_peer_review_user_prompt(
 ) -> str:
     """
     Build peer-review user prompt for one reviewer → one reviewee.
+    JSON-based, data-only prompt with indexed reasoning steps.
     """
 
-    reasoning_block = "\n".join(
-        f"{idx+1}. {step}"
-        for idx, step in enumerate(solution.reasoning)
+    payload = {
+        "problem": {
+            "statement": problem.statement
+        },
+        "solution": {
+            "answer": solution.answer,
+            "reasoning_steps": [
+                {
+                    "step": idx + 1,
+                    "text": step
+                }
+                for idx, step in enumerate(solution.reasoning)
+            ]
+        }
+    }
+
+    user_prompt = (
+        "Below is the data required to review the solution.\n"
+        "Use ALL information provided.\n\n"
+        "INPUT_DATA:\n"
+        f"{json.dumps(payload, indent=2)}"
     )
 
-    return f"""
-PROBLEM:
-{problem.statement}
+    print(f"[REVIEW USER PROMPT]: {user_prompt}")
+    return user_prompt
 
-SOLUTION ANSWER:
-{solution.answer}
 
-SOLUTION REASONING:
-{reasoning_block}
+REFINE_SOLUTION_SYSTEM_PROMPT = """
+You are a problem solution refiner.
 
-TASK:
-You are reviewer .
+You previously produced a solution to a problem.
+You are now given peer reviews written by other agents.
 
-Evaluate the solution above.
+Your task:
+- Explicitly address every critique found in the peer reviews
+- Decide whether each critique is valid or invalid
+- Incorporate all valid critiques into a revised solution
+- Defend your original reasoning when critiques are incorrect
+- Produce a refined final solution and final answer
 
-- Identify strengths in the reasoning.
-- Identify weaknesses or unclear steps.
-- Identify any logical, mathematical, or conceptual errors.
-- Suggest specific improvements if needed.
-- Give an overall assessment of correctness.
+Rules:
+- Do NOT ignore any critique
+- Do NOT introduce new assumptions unless required by accepted critiques
+- Be precise and concise
+- Base all revisions strictly on the provided problem, solution, and reviews
+"""
 
-Be strict but fair.
-""".strip()
+
+def build_solution_refinement_user_prompt(
+    *,
+    problem: Problem,
+    initial_solution: ProblemSolution,
+    reviews: list[ProblemSolutionReview],
+) -> str:
+    """
+    Builds the user prompt for Stage 3 solution refinement.
+    Input is intentionally JSON to preserve full structure.
+    """
+
+    problem_payload = problem.model_dump()
+
+    initial_solution_payload = initial_solution.model_dump()
+
+    reviews_payload = [
+        review.model_dump()
+        for review in reviews
+    ]
+
+    payload = {
+        "problem": problem_payload,
+        "previous_solution": initial_solution_payload,
+        "peer_reviews": reviews_payload,
+    }
+
+    user_prompt = (
+        "Below is the data required to refine the solution.\n"
+        "Use ALL information provided.\n\n"
+        "INPUT_DATA:\n"
+        f"{json.dumps(payload, indent=2)}"
+    )
+
+    print(f"[REFINEMENT USER PROMPT]: {user_prompt}")
+
+    return user_prompt
+
 
 
 

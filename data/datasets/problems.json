@@ -3,7 +3,7 @@
     "id": "logic_001",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truth-tellers and Liars",
-    "problem_statement": "There are two men. One of them is wearing a red shirt, and the other is wearing a blue shirt. The two men are named Andrew and Bob, but we do not know which is Andrew and which is Bob.\n\nThe man in the blue shirt says, \"I am Andrew.\" The man in the red shirt says, \"I am Bob.\"\n\nIf we know that at least one of them lied, then what color shirt is Andrew wearing?",
+    "statement": "There are two men. One of them is wearing a red shirt, and the other is wearing a blue shirt. The two men are named Andrew and Bob, but we do not know which is Andrew and which is Bob.\n\nThe man in the blue shirt says, \"I am Andrew.\" The man in the red shirt says, \"I am Bob.\"\n\nIf we know that at least one of them lied, then what color shirt is Andrew wearing?",
     "ground_answer": "red",
     "difficulty": "easy"
   },
@@ -11,7 +11,7 @@
     "id": "logic_002",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
-    "problem_statement": "There are 3 boxes, exactly one of which has a car. You can keep the car if you pick the correct box.\n\nOn each box there is a statement, exactly one of which is true.\n\nBox 1: \"The car is in this box.\"\nBox 2: \"The car is not in this box.\"\nBox 3: \"The car is not in box 1.\"\n\nWhich box has the car?",
+    "statement": "There are 3 boxes, exactly one of which has a car. You can keep the car if you pick the correct box.\n\nOn each box there is a statement, exactly one of which is true.\n\nBox 1: \"The car is in this box.\"\nBox 2: \"The car is not in this box.\"\nBox 3: \"The car is not in box 1.\"\n\nWhich box has the car?",
     "ground_answer": "Box 3",
     "difficulty": "medium"
   },
@@ -19,7 +19,7 @@
     "id": "logic_003",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
-    "problem_statement": "Mr. Robin asks his 5 students whether they studied maths yesterday.\n\nWhite: \"No one studied maths yesterday.\"\nBrown: \"1 person studied maths yesterday.\"\nGray: \"2 people studied maths yesterday.\"\nBlue: \"3 people studied maths yesterday.\"\nBlack: \"4 people studied maths yesterday.\"\n\nMr. Robin knows that only those who studied would be telling the truth and those who didn't would be lying. Who is telling the truth?",
+    "statement": "Mr. Robin asks his 5 students whether they studied maths yesterday.\n\nWhite: \"No one studied maths yesterday.\"\nBrown: \"1 person studied maths yesterday.\"\nGray: \"2 people studied maths yesterday.\"\nBlue: \"3 people studied maths yesterday.\"\nBlack: \"4 people studied maths yesterday.\"\n\nMr. Robin knows that only those who studied would be telling the truth and those who didn't would be lying. Who is telling the truth?",
     "ground_answer": "Gray",
     "difficulty": "medium"
   },
@@ -27,15 +27,15 @@
     "id": "logic_004",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
-    "problem_statement": "In a magical swamp, there are two species of talking amphibians: toads whose statements are always true, and frogs whose statements are always false.\n\nFour amphibians, Brian, Chris, LeRoy, and Mike live together in this swamp, and they make the following statements:\n\nBrian: \"Mike and I are different species.\"\nChris: \"LeRoy is a frog.\"\nLeRoy: \"Chris is a frog.\"\nMike: \"Of the four of us, at least two are toads.\"\n\nHow many of these amphibians are frogs?",
-    "ground_answer": 2,
+    "statement": "In a magical swamp, there are two species of talking amphibians: toads whose statements are always true, and frogs whose statements are always false.\n\nFour amphibians, Brian, Chris, LeRoy, and Mike live together in this swamp, and they make the following statements:\n\nBrian: \"Mike and I are different species.\"\nChris: \"LeRoy is a frog.\"\nLeRoy: \"Chris is a frog.\"\nMike: \"Of the four of us, at least two are toads.\"\n\nHow many of these amphibians are frogs?",
+    "ground_answer": "2",
     "difficulty": "hard"
   },
   {
     "id": "logic_005",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
-    "problem_statement": "It is known that octopuses with 7 legs always lie, while those with 6 legs and those with 8 legs always tell the truth.\n\nOne night, four octopuses met:\n\nGreen: \"We have 27 legs.\"\nBlack: \"We have 28 legs.\"\nRed: \"We have 25 legs.\"\nYellow: \"We have 26 legs.\"",
+    "statement": "It is known that octopuses with 7 legs always lie, while those with 6 legs and those with 8 legs always tell the truth.\n\nOne night, four octopuses met:\n\nGreen: \"We have 27 legs.\"\nBlack: \"We have 28 legs.\"\nRed: \"We have 25 legs.\"\nYellow: \"We have 26 legs.\"",
     "ground_answer": "Green",
     "difficulty": "medium"
   },
@@ -43,7 +43,7 @@
     "id": "logic_006",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
-    "problem_statement": "On the island of Knights and Knaves, I met three people A, B, and C, one of whom is a knight, another is a knave, and the other is a spy. The knight always tells the truth, the knave always lies, and the spy can either lie or tell the truth.\n\nA says: \"I am the knight.\"\nB says: \"I am the knave.\"\nC says: \"I am the spy.\"",
+    "statement": "On the island of Knights and Knaves, I met three people A, B, and C, one of whom is a knight, another is a knave, and the other is a spy. The knight always tells the truth, the knave always lies, and the spy can either lie or tell the truth.\n\nA says: \"I am the knight.\"\nB says: \"I am the knave.\"\nC says: \"I am the spy.\"",
     "ground_answer": "B",
     "difficulty": "medium"
   }

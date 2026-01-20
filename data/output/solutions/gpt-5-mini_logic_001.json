@@ -1,15 +1,16 @@
 {
-  "run_id": "aca172bd57e445e8bd8810a35a00ff5f",
+  "run_id": "45fc6c82290348bc8b8ffeb35d3efbc4",
   "problem_id": "logic_001",
   "solver_llm_model_id": "gpt-5-mini",
-  "time_elapsed_sec": 12.609999999998763,
+  "time_elapsed_sec": 11.921999999998661,
   "answer": "Andrew is wearing the red shirt.",
   "reasoning": [
-    "Label the blue-shirt person B and the red-shirt person R.",
-    "B says \"I am Andrew.\" R says \"I am Bob.\"",
-    "If B = Andrew and R = Bob, then B's statement is true and R's statement is true, so neither lied — this contradicts the condition that at least one lied. Therefore that assignment is impossible.",
-    "The only remaining assignment is B = Bob and R = Andrew. In that case B's statement \"I am Andrew\" is false and R's statement \"I am Bob\" is false, so at least one (indeed both) lied, satisfying the condition.",
-    "Thus the unique consistent solution is that Andrew is the red-shirt person.",
-    "No uncertainty: the deduction yields a single consistent assignment."
+    "We have two people: one in a blue shirt (Blue) and one in a red shirt (Red). Their names are Andrew and Bob in some order.",
+    "Blue says: \"I am Andrew.\" Red says: \"I am Bob.\"",
+    "Consider assignments:",
+    "1) If Blue = Andrew, then Red = Bob. Then Blue's statement (\"I am Andrew\") is true and Red's statement (\"I am Bob\") is true. That would mean both told the truth, contradicting the given fact that at least one lied. So this assignment is impossible.",
+    "2) If Blue = Bob, then Red = Andrew. Then Blue's statement (\"I am Andrew\") is false and Red's statement (\"I am Bob\") is false. Both lied, which satisfies the condition that at least one lied.",
+    "There are only two possible assignments (Andrew and Bob must occupy the two shirts), and the first is ruled out, leaving the second as the only consistent possibility.",
+    "Therefore Andrew must be the man wearing the red shirt. No uncertainty remains."
   ]
 }

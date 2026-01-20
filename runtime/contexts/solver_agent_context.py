@@ -1,17 +1,8 @@
-import json
 from pathlib import Path
-from typing import Optional
 import uuid
 from llm.agents.agent import LLMAgent
-from schemas.dataclass.problem import Problem
-from schemas.pydantic.problem_solution import ProblemSolution
-from schemas.pydantic.problem_solution_review import ProblemSolutionReview
-from llm.prompts.prompts import (
-    build_solver_system_prompt,
-    build_solver_user_prompt,
-    PEER_REVIEW_SYSTEM_PROMPT,
-    build_peer_review_user_prompt,
-)
+from schemas.pydantic.refined_problem_solution import *
+from llm.prompts.prompts import *
 
 
 class SolverAgentContext:
@@ -35,20 +26,16 @@ class SolverAgentContext:
 
         self.solution: Optional[ProblemSolution] = None
         self.peer_reviews: list[ProblemSolutionReview] = []
-        self.refined_solution: Optional[ProblemSolution] = None
+        self.refined_solution: Optional[RefinedProblemSolution] = None
 
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    # -------------------------
-    # Identity
-    # -------------------------
+
     @property
     def solver_id(self) -> str:
         return self.agent.config.llm_id
 
-    # -------------------------
-    # Stage 1: Solve
-    # -------------------------
+
     async def solve(
         self,
         *,
@@ -76,9 +63,7 @@ class SolverAgentContext:
         self.solution = solution
         return solution
 
-    # -------------------------
-    # Stage 2: Generate review
-    # -------------------------
+
     async def generate_review(
         self,
         *,
@@ -104,12 +89,12 @@ class SolverAgentContext:
         review.run_id = self.run_id
         review.problem_id = self.problem.problem_id
         review.reviewer_id = self.solver_id
+        review.solution_id = solution.solution_id
         review.reviewee_id = solution.solver_llm_model_id
+
         return review
 
-    # -------------------------
-    # Receive review
-    # -------------------------
+
     def receive_review(
         self,
         *,
@@ -129,20 +114,43 @@ class SolverAgentContext:
             f"solver={self.solver_id} "
             f"from={review.reviewer_id} "
             f"assessment={review.overall_assessment} "
-            f"confidence={review.confidence_score:.2f}"
+            f"confidence={review.confidence:.2f}"
         )
 
-    def solution_file_path(self) -> Path:
-        return (
-            self.output_dir /
-            f"{self.run_id}_{self.solver_id}_{self.problem.problem_id}.json"
+    async def refine_solution(
+            self,
+            *,
+            timeout_sec: int,
+            log_interval_sec: int,
+    ) -> RefinedProblemSolution:
+        """
+        Stage 3: Refine the previously generated solution using peer reviews.
+        """
+
+        refined_solution = await self.agent.run_structured_call(
+            problem=self.problem,
+            system_prompt=REFINE_SOLUTION_SYSTEM_PROMPT,
+            user_prompt=build_solution_refinement_user_prompt(
+                problem=self.problem,
+                initial_solution=self.solution,
+                reviews=self.peer_reviews,
+            ),
+            output_model=RefinedProblemSolution,
+            method_type="solution_refinement",
+            timeout_sec=timeout_sec,
+            log_interval_sec=log_interval_sec,
         )
 
-    def review_file_path(self, *, reviewee_id: str) -> Path:
-        review_dir = self.output_dir / "reviews"
-        review_dir.mkdir(parents=True, exist_ok=True)
+        refined_solution.run_id = self.run_id
+        refined_solution.solver_llm_model_id = self.solver_id
+        refined_solution.parent_solution_id = self.solution.solution_id
+        refined_solution.refined_solution_id = uuid.uuid4().hex
+        refined_solution.problem_id = self.problem.problem_id
+        refined_solution.review_ids = [
+            review.review_id
+            for review in self.peer_reviews
+            if review.review_id is not None
+        ]
 
-        return (
-            review_dir /
-            f"{self.run_id}_{self.solver_id}_reviews_{reviewee_id}.json"
-        )
+        self.refined_solution = refined_solution
+        return refined_solution
