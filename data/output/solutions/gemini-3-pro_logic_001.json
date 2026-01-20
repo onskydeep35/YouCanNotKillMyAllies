@@ -1,16 +1,24 @@
 {
-  "run_id": "aca172bd57e445e8bd8810a35a00ff5f",
+  "run_id": "2d7ebe54d6d947ce9ea96dcdb2cda253",
+  "solution_id": "89ad71a1568141bbb3ad16ba239eb601",
   "problem_id": "logic_001",
   "solver_llm_model_id": "gemini-3-pro",
-  "time_elapsed_sec": 10.781999999999243,
-  "answer": "Red",
+  "time_elapsed_sec": 13.0,
   "reasoning": [
-    "Identify the two possible scenarios for the identities of the men: Scenario 1 is that the man in the blue shirt is Andrew and the man in the red shirt is Bob. Scenario 2 is that the man in the blue shirt is Bob and the man in the red shirt is Andrew.",
-    "Analyze the statements made in Scenario 1. The man in the blue shirt says 'I am Andrew.' If he is Andrew, this is True. The man in the red shirt says 'I am Bob.' If he is Bob, this is True.",
-    "Check Scenario 1 against the given constraint. The constraint states that 'at least one of them lied.' In Scenario 1, both statements are True. Therefore, Scenario 1 violates the constraint and is impossible.",
-    "Analyze the statements made in Scenario 2. The man in the blue shirt says 'I am Andrew.' If he is Bob, this is False (a lie). The man in the red shirt says 'I am Bob.' If he is Andrew, this is False (a lie).",
-    "Check Scenario 2 against the given constraint. In this scenario, both men lied. This satisfies the condition that 'at least one of them lied.' Therefore, Scenario 2 is the correct state of affairs.",
-    "Determine Andrew's shirt color based on Scenario 2. In this scenario, the man in the red shirt is Andrew.",
-    "Conclude that Andrew is wearing a red shirt."
-  ]
+    "There are two possibilities for the identities of the men: either Andrew is wearing Blue and Bob is wearing Red, or Andrew is wearing Red and Bob is wearing Blue.",
+    "Let's analyze Case 1: Andrew is wearing the Blue shirt and Bob is wearing the Red shirt.",
+    "In Case 1, the man in the Blue shirt says 'I am Andrew.' Since he is Andrew, this statement is True.",
+    "In Case 1, the man in the Red shirt says 'I am Bob.' Since he is Bob, this statement is True.",
+    "Therefore, in Case 1, both men are telling the truth.",
+    "The problem states that 'at least one of them lied.' Case 1 contradicts this condition because neither lied.",
+    "Let's analyze Case 2: Andrew is wearing the Red shirt and Bob is wearing the Blue shirt.",
+    "In Case 2, the man in the Blue shirt (Bob) says 'I am Andrew.' This statement is False.",
+    "In Case 2, the man in the Red shirt (Andrew) says 'I am Bob.' This statement is False.",
+    "Therefore, in Case 2, both men are lying.",
+    "This satisfies the condition that 'at least one of them lied' (since both lied).",
+    "Since Case 1 is impossible and Case 2 is consistent with the given information, Case 2 must be the reality.",
+    "In Case 2, Andrew is wearing the Red shirt."
+  ],
+  "answer": "Red",
+  "confidence": 1.0
 }

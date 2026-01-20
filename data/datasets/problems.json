@@ -12,7 +12,7 @@
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
     "statement": "There are 3 boxes, exactly one of which has a car. You can keep the car if you pick the correct box.\n\nOn each box there is a statement, exactly one of which is true.\n\nBox 1: \"The car is in this box.\"\nBox 2: \"The car is not in this box.\"\nBox 3: \"The car is not in box 1.\"\n\nWhich box has the car?",
-    "ground_answer": "Box 3",
+    "ground_answer": "Box 2",
     "difficulty": "medium"
   },
   {
@@ -28,14 +28,14 @@
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
     "statement": "In a magical swamp, there are two species of talking amphibians: toads whose statements are always true, and frogs whose statements are always false.\n\nFour amphibians, Brian, Chris, LeRoy, and Mike live together in this swamp, and they make the following statements:\n\nBrian: \"Mike and I are different species.\"\nChris: \"LeRoy is a frog.\"\nLeRoy: \"Chris is a frog.\"\nMike: \"Of the four of us, at least two are toads.\"\n\nHow many of these amphibians are frogs?",
-    "ground_answer": "2",
+    "ground_answer": "3",
     "difficulty": "hard"
   },
   {
     "problem_id": "logic_005",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
-    "statement": "It is known that octopuses with 7 legs always lie, while those with 6 legs and those with 8 legs always tell the truth.\n\nOne night, four octopuses met:\n\nGreen: \"We have 27 legs.\"\nBlack: \"We have 28 legs.\"\nRed: \"We have 25 legs.\"\nYellow: \"We have 26 legs.\"",
+    "statement": "It is known that octopuses with 7 legs always lie, while those with 6 legs and those with 8 legs always tell the truth.\n\nOne night, four octopuses met:\n\nGreen: \"We have 27 legs.\"\nBlack: \"We have 28 legs.\"\nRed: \"We have 25 legs.\"\nYellow: \"We have 26 legs.\"\n Who spoke the truth?",
     "ground_answer": "Green",
     "difficulty": "medium"
   },

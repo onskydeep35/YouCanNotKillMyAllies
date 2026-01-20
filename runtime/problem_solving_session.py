@@ -1,13 +1,14 @@
 import asyncio
 import json
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from llm.agents.agent import LLMAgent
 from schemas.pydantic.problem import Problem
 from schemas.pydantic.role_assessment import RoleAssessment
 from schemas.pydantic.problem_solution_review import ProblemSolutionReview
 from schemas.pydantic.refined_problem_solution import RefinedProblemSolution
+from schemas.pydantic.final_judgement import FinalJudgement
 
 from data.persistence.firestore_writer import (
     FirestoreWriter,
@@ -15,9 +16,11 @@ from data.persistence.firestore_writer import (
     SOLUTION_REVIEWS,
     REFINED_SOLUTIONS,
     ROLE_ASSESSMENTS,
+    FINAL_JUDGEMENTS
 )
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
+from runtime.contexts.judge_agent_context import JudgeAgentContext
 
 
 class ProblemSolvingSession:
@@ -43,7 +46,7 @@ class ProblemSolvingSession:
         self.semaphore = asyncio.Semaphore(max_concurrency)
 
         self.solver_contexts: List[SolverAgentContext] = []
-        self.judge_agents: List[LLMAgent] = []
+        self.judge_context: Optional[JudgeAgentContext] = None
 
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -72,6 +75,11 @@ class ProblemSolvingSession:
         )
 
         await self._run_refinements(
+            timeout_sec=timeout_sec,
+            log_interval_sec=log_interval_sec,
+        )
+
+        await self._run_final_judgement(
             timeout_sec=timeout_sec,
             log_interval_sec=log_interval_sec,
         )
@@ -138,8 +146,8 @@ class ProblemSolvingSession:
 
         results = await asyncio.gather(*[assess(c) for c in contexts])
 
-        if len(results) < 3:
-            raise RuntimeError("At least 3 agents required")
+        if len(results) < 4:
+            raise RuntimeError("At least 4 agents required (3 solvers + 1 judge)")
 
         def judge_preference(a: RoleAssessment) -> float:
             return a.judge_score - a.solver_score
@@ -147,18 +155,30 @@ class ProblemSolvingSession:
         results.sort(key=judge_preference, reverse=True)
 
         judge_id = results[0].llm_id
-        solver_ids = {a.llm_id for a in results[1:]}
+        solver_ids = [a.llm_id for a in results[1:4]]
 
         print("[ROLE ASSIGNMENT]")
         print(f"  Judge : {judge_id}")
-        for sid in solver_ids:
-            print(f"  Solver: {sid}")
+        for i, sid in enumerate(solver_ids, start=1):
+            print(f"  Solver {i}: {sid}")
+
+        solver_contexts: List[SolverAgentContext] = []
 
         for ctx in contexts:
-            if ctx.solver_id == judge_id:
-                self.judge_agents.append(ctx.agent)
-            elif ctx.solver_id in solver_ids:
-                self.solver_contexts.append(ctx)
+            if ctx.solver_id in solver_ids:
+                solver_contexts.append(ctx)
+            elif ctx.solver_id == judge_id:
+                self.judge_context = JudgeAgentContext(
+                    agent=ctx.agent,
+                    problem=self.problem,
+                    run_id=self.run_id,
+                )
+
+        # preserve solver ordering as Solver 1/2/3
+        self.solver_contexts = solver_contexts
+
+        # now inject solver contexts into judge
+        self.judge_context.solver_contexts = self.solver_contexts
 
     # -------------------------
     # Stage 1: Solving
@@ -341,3 +361,57 @@ class ProblemSolvingSession:
         )
 
         print("[REFINEMENT COMPLETE]")
+
+    async def _run_final_judgement(
+            self,
+            *,
+            timeout_sec: int,
+            log_interval_sec: int,
+    ) -> None:
+
+        print("[FINAL JUDGMENT START]")
+
+        if not self.judge_context:
+            raise RuntimeError("JudgeAgentContext not initialized")
+
+        judgement: FinalJudgement = await self.judge_context.generate_judgement(
+            solver_agent_contexts=self.solver_contexts,
+            timeout_sec=timeout_sec,
+            log_interval_sec=log_interval_sec,
+        )
+
+        document = {
+            "llm_id": judgement.llm_id,
+            "run_id": judgement.run_id,
+            "judgement_id": judgement.judgement_id,
+            "problem_id": judgement.problem_id,
+            "time_elapsed_sec": judgement.time_elapsed_sec,
+            **judgement.model_dump(),
+        }
+
+        await self.writer.write(
+            collection=FINAL_JUDGEMENTS,
+            document=judgement.model_dump(),
+            document_id=judgement.judgement_id,
+        )
+
+        judgement_dir = self.output_dir / "final_judgements"
+        judgement_dir.mkdir(parents=True, exist_ok=True)
+
+        file_path = (
+                judgement_dir /
+                f"{self.judge_context.judge_id}_{self.problem.problem_id}.json"
+        )
+
+        file_path.write_text(
+            json.dumps(document, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
+        winner_index = int(judgement.winner_solver.split()[-1]) - 1
+        winner_ctx = self.solver_contexts[winner_index]
+
+        print("[FINAL JUDGMENT COMPLETE]")
+        print("WINNER:", judgement.winner_solver)
+        print("FINAL ANSWER:")
+        print(winner_ctx.refined_solution.refined_answer)

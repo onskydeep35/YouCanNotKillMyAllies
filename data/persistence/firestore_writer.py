@@ -6,6 +6,7 @@ ROLE_ASSESSMENTS = "RoleAssessments"
 SOLUTIONS = "Solutions"
 SOLUTION_REVIEWS = "SolutionReviews"
 REFINED_SOLUTIONS = "RefinedSolutions"
+FINAL_JUDGEMENTS = "FinalJudgements"
 METRICS = "Metrics"
 
 class FirestoreWriter:

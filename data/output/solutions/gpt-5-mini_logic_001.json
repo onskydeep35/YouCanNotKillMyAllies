@@ -1,16 +1,16 @@
 {
-  "run_id": "45fc6c82290348bc8b8ffeb35d3efbc4",
+  "run_id": "2d7ebe54d6d947ce9ea96dcdb2cda253",
+  "solution_id": "340233a92d3748f29fae56f8b5e54ef1",
   "problem_id": "logic_001",
   "solver_llm_model_id": "gpt-5-mini",
-  "time_elapsed_sec": 11.921999999998661,
-  "answer": "Andrew is wearing the red shirt.",
+  "time_elapsed_sec": 15.375,
   "reasoning": [
-    "We have two people: one in a blue shirt (Blue) and one in a red shirt (Red). Their names are Andrew and Bob in some order.",
-    "Blue says: \"I am Andrew.\" Red says: \"I am Bob.\"",
-    "Consider assignments:",
-    "1) If Blue = Andrew, then Red = Bob. Then Blue's statement (\"I am Andrew\") is true and Red's statement (\"I am Bob\") is true. That would mean both told the truth, contradicting the given fact that at least one lied. So this assignment is impossible.",
-    "2) If Blue = Bob, then Red = Andrew. Then Blue's statement (\"I am Andrew\") is false and Red's statement (\"I am Bob\") is false. Both lied, which satisfies the condition that at least one lied.",
-    "There are only two possible assignments (Andrew and Bob must occupy the two shirts), and the first is ruled out, leaving the second as the only consistent possibility.",
-    "Therefore Andrew must be the man wearing the red shirt. No uncertainty remains."
-  ]
+    "Label the blue-shirt person B and the red-shirt person R.",
+    "B says 'I am Andrew.' R says 'I am Bob.'",
+    "If Blue = Andrew and Red = Bob, then both statements are true, contradicting 'at least one lied.'",
+    "Therefore Blue cannot be Andrew; hence Blue = Bob and Red = Andrew.",
+    "Conclusion: Andrew is wearing the red shirt."
+  ],
+  "answer": "Red",
+  "confidence": 1.0
 }
