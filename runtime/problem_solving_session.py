@@ -1,6 +1,5 @@
 import asyncio
 import json
-import uuid
 from pathlib import Path
 from typing import List
 
@@ -9,19 +8,16 @@ from schemas.pydantic.problem import Problem
 from schemas.pydantic.role_assessment import RoleAssessment
 from schemas.pydantic.problem_solution_review import ProblemSolutionReview
 from schemas.pydantic.refined_problem_solution import RefinedProblemSolution
+
 from data.persistence.firestore_writer import (
     FirestoreWriter,
     SOLUTIONS,
     SOLUTION_REVIEWS,
     REFINED_SOLUTIONS,
-    ROLE_ASSESSMENTS
+    ROLE_ASSESSMENTS,
 )
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
-from llm.prompts.prompts import (
-    ROLE_DETERMINATION_SYSTEM_PROMPT,
-    build_role_determination_user_prompt,
-)
 
 
 class ProblemSolvingSession:
@@ -51,14 +47,11 @@ class ProblemSolvingSession:
 
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-    # -------------------------
-    # Public API
-    # -------------------------
     async def run(
-            self,
-            *,
-            timeout_sec: int,
-            log_interval_sec: int,
+        self,
+        *,
+        timeout_sec: int,
+        log_interval_sec: int,
     ) -> None:
 
         print(f"[SESSION START] problem={self.problem.problem_id}")
@@ -97,25 +90,25 @@ class ProblemSolvingSession:
 
         print("[ROLE ASSESSMENT START]")
 
-        assessment_dir = self.output_dir / "role_assesments"
+        assessment_dir = self.output_dir / "role_assessments"
         assessment_dir.mkdir(parents=True, exist_ok=True)
 
-        async def assess(agent: LLMAgent) -> RoleAssessment:
+        contexts = [
+            SolverAgentContext(
+                agent=a,
+                problem=self.problem,
+                run_id=self.run_id,
+                output_dir=self.output_dir,
+            )
+            for a in self.agents
+        ]
+
+        async def assess(ctx: SolverAgentContext) -> RoleAssessment:
             async with self.semaphore:
-                assessment = await agent.run_structured_call(
-                    problem=self.problem,
-                    system_prompt=ROLE_DETERMINATION_SYSTEM_PROMPT,
-                    user_prompt=build_role_determination_user_prompt(self.problem),
-                    output_model=RoleAssessment,
-                    method_type="role_determination",
+                assessment = await ctx.assess_role(
                     timeout_sec=timeout_sec,
                     log_interval_sec=log_interval_sec,
                 )
-
-                assessment.llm_id = agent.config.llm_id
-                assessment.run_id = self.run_id
-                assessment.assessment_id = uuid.uuid4().hex
-                assessment.problem_id = self.problem.problem_id
 
                 document = {
                     "llm_id": assessment.llm_id,
@@ -128,12 +121,12 @@ class ProblemSolvingSession:
                 await self.writer.write(
                     collection=ROLE_ASSESSMENTS,
                     document=document,
-                    document_id=assessment.assessment_id
+                    document_id=assessment.assessment_id,
                 )
 
                 file_path = (
-                        assessment_dir /
-                        f"{assessment.llm_id}_{assessment.problem_id}.json"
+                    assessment_dir /
+                    f"{assessment.llm_id}_{assessment.problem_id}.json"
                 )
 
                 file_path.write_text(
@@ -143,9 +136,7 @@ class ProblemSolvingSession:
 
                 return assessment
 
-        results = await asyncio.gather(
-            *[assess(agent) for agent in self.agents]
-        )
+        results = await asyncio.gather(*[assess(c) for c in contexts])
 
         if len(results) < 3:
             raise RuntimeError("At least 3 agents required")
@@ -163,18 +154,11 @@ class ProblemSolvingSession:
         for sid in solver_ids:
             print(f"  Solver: {sid}")
 
-        for agent in self.agents:
-            if agent.config.llm_id == judge_id:
-                self.judge_agents.append(agent)
-            elif agent.config.llm_id in solver_ids:
-                self.solver_contexts.append(
-                    SolverAgentContext(
-                        run_id=self.run_id,
-                        agent=agent,
-                        problem=self.problem,
-                        output_dir=self.output_dir,
-                    )
-                )
+        for ctx in contexts:
+            if ctx.solver_id == judge_id:
+                self.judge_agents.append(ctx.agent)
+            elif ctx.solver_id in solver_ids:
+                self.solver_contexts.append(ctx)
 
     # -------------------------
     # Stage 1: Solving

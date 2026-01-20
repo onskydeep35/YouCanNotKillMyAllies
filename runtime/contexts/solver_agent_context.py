@@ -1,8 +1,24 @@
 from pathlib import Path
 import uuid
+from typing import Optional
+
 from llm.agents.agent import LLMAgent
-from schemas.pydantic.refined_problem_solution import *
-from llm.prompts.prompts import *
+from schemas.pydantic.problem import Problem
+from schemas.pydantic.role_assessment import RoleAssessment
+from schemas.pydantic.problem_solution_review import ProblemSolutionReview
+from schemas.pydantic.refined_problem_solution import RefinedProblemSolution
+from schemas.pydantic.problem_solution import ProblemSolution
+
+from llm.prompts.prompts import (
+    ROLE_DETERMINATION_SYSTEM_PROMPT,
+    build_role_determination_user_prompt,
+    build_solver_system_prompt,
+    build_solver_user_prompt,
+    PEER_REVIEW_SYSTEM_PROMPT,
+    build_peer_review_user_prompt,
+    REFINE_SOLUTION_SYSTEM_PROMPT,
+    build_solution_refinement_user_prompt,
+)
 
 
 class SolverAgentContext:
@@ -24,18 +40,51 @@ class SolverAgentContext:
         self.run_id = run_id
         self.output_dir = output_dir
 
+        self.role_assessment: Optional[RoleAssessment] = None
         self.solution: Optional[ProblemSolution] = None
         self.peer_reviews: list[ProblemSolutionReview] = []
         self.refined_solution: Optional[RefinedProblemSolution] = None
 
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-
     @property
     def solver_id(self) -> str:
         return self.agent.config.llm_id
 
+    # -------------------------
+    # Stage 0: Role assessment
+    # -------------------------
+    async def assess_role(
+        self,
+        *,
+        timeout_sec: int,
+        log_interval_sec: int,
+    ) -> RoleAssessment:
+        """
+        Performs LLM role self-assessment for this agent.
+        """
 
+        assessment = await self.agent.run_structured_call(
+            problem=self.problem,
+            system_prompt=ROLE_DETERMINATION_SYSTEM_PROMPT,
+            user_prompt=build_role_determination_user_prompt(self.problem),
+            output_model=RoleAssessment,
+            method_type="role_determination",
+            timeout_sec=timeout_sec,
+            log_interval_sec=log_interval_sec,
+        )
+
+        assessment.llm_id = self.solver_id
+        assessment.run_id = self.run_id
+        assessment.assessment_id = uuid.uuid4().hex
+        assessment.problem_id = self.problem.problem_id
+
+        self.role_assessment = assessment
+        return assessment
+
+    # -------------------------
+    # Stage 1: Solve
+    # -------------------------
     async def solve(
         self,
         *,
@@ -56,14 +105,16 @@ class SolverAgentContext:
         )
 
         solution.run_id = self.run_id
-        solution.solver_llm_model_id = self.agent.config.llm_id
+        solution.solver_llm_model_id = self.solver_id
         solution.solution_id = uuid.uuid4().hex
         solution.problem_id = self.problem.problem_id
 
         self.solution = solution
         return solution
 
-
+    # -------------------------
+    # Stage 2: Peer review
+    # -------------------------
     async def generate_review(
         self,
         *,
@@ -94,7 +145,6 @@ class SolverAgentContext:
 
         return review
 
-
     def receive_review(
         self,
         *,
@@ -117,15 +167,15 @@ class SolverAgentContext:
             f"confidence={review.confidence:.2f}"
         )
 
+    # -------------------------
+    # Stage 3: Refinement
+    # -------------------------
     async def refine_solution(
-            self,
-            *,
-            timeout_sec: int,
-            log_interval_sec: int,
+        self,
+        *,
+        timeout_sec: int,
+        log_interval_sec: int,
     ) -> RefinedProblemSolution:
-        """
-        Stage 3: Refine the previously generated solution using peer reviews.
-        """
 
         refined_solution = await self.agent.run_structured_call(
             problem=self.problem,
@@ -147,9 +197,7 @@ class SolverAgentContext:
         refined_solution.refined_solution_id = uuid.uuid4().hex
         refined_solution.problem_id = self.problem.problem_id
         refined_solution.review_ids = [
-            review.review_id
-            for review in self.peer_reviews
-            if review.review_id is not None
+            r.review_id for r in self.peer_reviews if r.review_id
         ]
 
         self.refined_solution = refined_solution
