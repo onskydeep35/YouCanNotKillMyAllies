@@ -1,24 +1,5 @@
 from pydantic import BaseModel, Field
 
-
-class RoleScore(BaseModel):
-    """
-    Confidence score assigned by the LLM for a specific role.
-    """
-
-    role: str = Field(
-        ...,
-        description="Name of the role being evaluated (e.g., 'Solver_1', 'Solver_2', 'Solver_3', 'Judge')"
-    )
-
-    score: float = Field(
-        ...,
-        ge=0.0,
-        le=1.0,
-        description="LLM's self-assessed suitability for this role on a scale from 0 to 1"
-    )
-
-
 class RoleAssessment(BaseModel):
     """
     Self-assessment produced by an LLM indicating its suitability for different roles.
@@ -31,15 +12,36 @@ class RoleAssessment(BaseModel):
         description="Identifier of the LLM producing this assessment (excluded from model output)"
     )
 
+    run_id: str | None = Field(
+        default=None,
+        exclude=True,
+        description="Identifier of the problem solving session run (excluded from model output)"
+    )
+
     assessment_id: str | None = Field(
         default=None,
         exclude=True,
-        description="Internal identifier for this role assessment instance"
+        description="Internal identifier for this role assessment instance (excluded from model output)"
     )
 
-    role_scores: list[RoleScore] = Field(
+    problem_id: str | None = Field(
+        default=None,
+        exclude=True,
+        description="Identifier of the problem for this assessment (excluded from model output)"
+    )
+
+    judge_score: float = Field(
         ...,
-        description="List of roles with corresponding self-assessed suitability scores"
+        ge=0.0,
+        le=1.0,
+        description="LLM's score for being a judge for given problem (0–1)"
+    )
+
+    solver_score: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="LLM's score for being a solver for given problem (0–1)"
     )
 
     reasoning: str = Field(

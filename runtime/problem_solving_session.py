@@ -13,7 +13,8 @@ from data.persistence.firestore_writer import (
     FirestoreWriter,
     SOLUTIONS,
     SOLUTION_REVIEWS,
-    REFINED_SOLUTIONS
+    REFINED_SOLUTIONS,
+    ROLE_ASSESSMENTS
 )
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
@@ -94,6 +95,11 @@ class ProblemSolvingSession:
         log_interval_sec: int,
     ) -> None:
 
+        print("[ROLE ASSESSMENT START]")
+
+        assessment_dir = self.output_dir / "role_assesments"
+        assessment_dir.mkdir(parents=True, exist_ok=True)
+
         async def assess(agent: LLMAgent) -> RoleAssessment:
             async with self.semaphore:
                 assessment = await agent.run_structured_call(
@@ -107,7 +113,34 @@ class ProblemSolvingSession:
                 )
 
                 assessment.llm_id = agent.config.llm_id
+                assessment.run_id = self.run_id
                 assessment.assessment_id = uuid.uuid4().hex
+                assessment.problem_id = self.problem.problem_id
+
+                document = {
+                    "llm_id": assessment.llm_id,
+                    "assessment_id": assessment.assessment_id,
+                    "problem_id": assessment.problem_id,
+                    "run_id": assessment.run_id,
+                    **assessment.model_dump(),
+                }
+
+                await self.writer.write(
+                    collection=ROLE_ASSESSMENTS,
+                    document=document,
+                    document_id=assessment.assessment_id
+                )
+
+                file_path = (
+                        assessment_dir /
+                        f"{assessment.llm_id}_{assessment.problem_id}.json"
+                )
+
+                file_path.write_text(
+                    json.dumps(document, indent=2, ensure_ascii=False),
+                    encoding="utf-8",
+                )
+
                 return assessment
 
         results = await asyncio.gather(
@@ -118,13 +151,7 @@ class ProblemSolvingSession:
             raise RuntimeError("At least 3 agents required")
 
         def judge_preference(a: RoleAssessment) -> float:
-            solver_score = judge_score = 0.0
-            for rs in a.role_scores:
-                if rs.role == "Solver":
-                    solver_score = rs.score
-                elif rs.role == "Judge":
-                    judge_score = rs.score
-            return judge_score - solver_score
+            return a.judge_score - a.solver_score
 
         results.sort(key=judge_preference, reverse=True)
 
@@ -168,6 +195,7 @@ class ProblemSolvingSession:
 
                 document = {
                     "run_id": solution.run_id,
+                    "solution_id": solution.solution_id,
                     "problem_id": solution.problem_id,
                     "solver_llm_model_id": solution.solver_llm_model_id,
                     "time_elapsed_sec": solution.time_elapsed_sec,
@@ -179,6 +207,7 @@ class ProblemSolvingSession:
                 await self.writer.write(
                     collection=SOLUTIONS,
                     document=document,
+                    document_id=solution.solution_id
                 )
 
                 solutions_dir = self.output_dir / "solutions"
@@ -242,6 +271,7 @@ class ProblemSolvingSession:
                 await self.writer.write(
                     collection=SOLUTION_REVIEWS,
                     document=document,
+                    document_id=review.review_id
                 )
 
                 solutions_dir = self.output_dir / "reviews"
@@ -309,11 +339,12 @@ class ProblemSolvingSession:
                 await self.writer.write(
                     collection=REFINED_SOLUTIONS,
                     document=document,
+                    document_id=refined.refined_solution_id
                 )
 
                 file_path = (
                         refined_dir /
-                        f"{ctx.solver_id}_{self.problem.problem_id}.json"
+                        f"{ctx.solver_id}_{ctx.problem.problem_id}.json"
                 )
 
                 file_path.write_text(
