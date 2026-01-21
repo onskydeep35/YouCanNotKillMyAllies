@@ -46,5 +46,77 @@
     "statement": "On the island of Knights and Knaves, I met three people A, B, and C, one of whom is a knight, another is a knave, and the other is a spy. The knight always tells the truth, the knave always lies, and the spy can either lie or tell the truth.\n\nA says: \"I am the knight.\"\nB says: \"I am the knave.\"\nC says: \"I am the spy.\"",
     "ground_answer": "B",
     "difficulty": "medium"
+  },
+  {
+    "problem_id": "math_007",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Number Theory",
+    "statement": "What is the smallest positive integer that is divisible by all integers from 1 to 10?",
+    "ground_answer": "2520",
+    "difficulty": "easy"
+  },
+  {
+    "problem_id": "math_008",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Combinatorics",
+    "statement": "In how many ways can you arrange the letters in the word 'STATISTICS'?",
+    "ground_answer": "50400",
+    "difficulty": "medium"
+  },
+  {
+    "problem_id": "math_009",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Probability",
+    "statement": "A fair six-sided die is rolled twice. What is the probability that the sum of the two rolls is exactly 7?",
+    "ground_answer": "1/6",
+    "difficulty": "easy"
+  },
+  {
+    "problem_id": "math_010",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Algebra",
+    "statement": "If x^2 + y^2 = 25 and x + y = 7, what is the value of xy?",
+    "ground_answer": "12",
+    "difficulty": "medium"
+  },
+  {
+    "problem_id": "math_011",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Series",
+    "statement": "What is the sum of the first 100 positive integers?",
+    "ground_answer": "5050",
+    "difficulty": "easy"
+  },
+  {
+    "problem_id": "physics_001",
+    "category": "Physics & Scientific Reasoning",
+    "subcategory": "Kinematics",
+    "statement": "A ball is thrown vertically upward with an initial velocity of 20 m/s. Assuming g = 10 m/s² and no air resistance, how high does it go before falling back down?",
+    "ground_answer": "20 meters",
+    "difficulty": "medium"
+  },
+  {
+    "problem_id": "physics_002",
+    "category": "Physics & Scientific Reasoning",
+    "subcategory": "Forces",
+    "statement": "A 5 kg block rests on a horizontal surface. If a horizontal force of 30 N is applied and the coefficient of kinetic friction is 0.4, what is the acceleration of the block? (Use g = 10 m/s²)",
+    "ground_answer": "2 m/s²",
+    "difficulty": "medium"
+  },
+  {
+    "problem_id": "physics_003",
+    "category": "Physics & Scientific Reasoning",
+    "subcategory": "Energy",
+    "statement": "A 2 kg object moving at 5 m/s collides with a stationary 3 kg object in a perfectly inelastic collision. What is the final velocity of the combined objects?",
+    "ground_answer": "2 m/s",
+    "difficulty": "medium"
+  },
+  {
+    "problem_id": "physics_004",
+    "category": "Physics & Scientific Reasoning",
+    "subcategory": "Optics",
+    "statement": "Light travels from air (refractive index = 1.0) into water (refractive index = 1.33) at an angle of incidence of 30°. What is the angle of refraction? (Use Snell's law: n1*sin(θ1) = n2*sin(θ2))",
+    "ground_answer": "22 degrees",
+    "difficulty": "hard"
   }
 ]
