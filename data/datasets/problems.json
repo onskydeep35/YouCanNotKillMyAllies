@@ -88,7 +88,7 @@
     "difficulty": "easy"
   },
   {
-    "problem_id": "physics_001",
+    "problem_id": "physics_012",
     "category": "Physics & Scientific Reasoning",
     "subcategory": "Kinematics",
     "statement": "A ball is thrown vertically upward with an initial velocity of 20 m/s. Assuming g = 10 m/s² and no air resistance, how high does it go before falling back down?",
@@ -96,7 +96,7 @@
     "difficulty": "medium"
   },
   {
-    "problem_id": "physics_002",
+    "problem_id": "physics_013",
     "category": "Physics & Scientific Reasoning",
     "subcategory": "Forces",
     "statement": "A 5 kg block rests on a horizontal surface. If a horizontal force of 30 N is applied and the coefficient of kinetic friction is 0.4, what is the acceleration of the block? (Use g = 10 m/s²)",
@@ -104,7 +104,7 @@
     "difficulty": "medium"
   },
   {
-    "problem_id": "physics_003",
+    "problem_id": "physics_014",
     "category": "Physics & Scientific Reasoning",
     "subcategory": "Energy",
     "statement": "A 2 kg object moving at 5 m/s collides with a stationary 3 kg object in a perfectly inelastic collision. What is the final velocity of the combined objects?",
@@ -112,7 +112,7 @@
     "difficulty": "medium"
   },
   {
-    "problem_id": "physics_004",
+    "problem_id": "physics_015",
     "category": "Physics & Scientific Reasoning",
     "subcategory": "Optics",
     "statement": "Light travels from air (refractive index = 1.0) into water (refractive index = 1.33) at an angle of incidence of 30°. What is the angle of refraction? (Use Snell's law: n1*sin(θ1) = n2*sin(θ2))",
