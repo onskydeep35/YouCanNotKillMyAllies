@@ -23,7 +23,7 @@ from data.persistence.firestore_writer import (
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
 from runtime.contexts.judge_agent_context import JudgeAgentContext
-
+from llm.prompts.prompts import *
 
 class ProblemSolvingSession:
     """
@@ -289,6 +289,7 @@ class ProblemSolvingSession:
                     "review_id": review.review_id,
                     "run_id": review.run_id,
                     "problem_id": review.problem_id,
+                    "solution_id": review.solution_id,
                     "reviewer_id": review.reviewer_id,
                     "reviewee_id": review.reviewee_id,
                     **review.model_dump(),

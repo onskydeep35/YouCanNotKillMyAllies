@@ -1,4 +1,4 @@
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Set
 from pydantic import BaseModel
 import json
 
@@ -12,7 +12,12 @@ class PydanticSchemaUtils:
     - Respects model_config['exclude']
     - Uses field descriptions
     - Emits TYPE information (not example values)
+    - Resolves nested Pydantic models via $ref
     """
+
+    # ==========================================================
+    # Public API
+    # ==========================================================
 
     @staticmethod
     def to_descriptive_json(
@@ -21,10 +26,12 @@ class PydanticSchemaUtils:
         include_descriptions: bool = True,
     ) -> Dict[str, Any]:
         schema = model.model_json_schema()
+        defs = schema.get("$defs", {})
         excluded_fields = PydanticSchemaUtils._collect_excluded_fields(model)
 
         return PydanticSchemaUtils._build_example_from_schema(
             schema=schema,
+            defs=defs,
             excluded_fields=excluded_fields,
             include_descriptions=include_descriptions,
         )
@@ -57,14 +64,15 @@ class PydanticSchemaUtils:
     def _build_example_from_schema(
         *,
         schema: Dict[str, Any],
-        excluded_fields: set[str],
+        defs: Dict[str, Any],
+        excluded_fields: Set[str],
         include_descriptions: bool,
     ) -> Any:
         schema_type = schema.get("type")
 
         # ---------- Objects ----------
         if schema_type == "object":
-            result = {}
+            result: Dict[str, Any] = {}
             properties = schema.get("properties", {})
 
             for field_name, field_schema in properties.items():
@@ -74,26 +82,38 @@ class PydanticSchemaUtils:
                 if include_descriptions and "description" in field_schema:
                     result[field_name] = {
                         "_description": field_schema["description"],
-                        "_type": PydanticSchemaUtils._schema_type_repr(field_schema),
+                        "_type": PydanticSchemaUtils._schema_type_repr(
+                            field_schema, defs
+                        ),
                     }
                 else:
-                    result[field_name] = PydanticSchemaUtils._schema_type_repr(field_schema)
+                    result[field_name] = PydanticSchemaUtils._schema_type_repr(
+                        field_schema, defs
+                    )
 
             return result
 
         # ---------- Arrays ----------
         if schema_type == "array":
-            return PydanticSchemaUtils._schema_type_repr(schema)
+            return PydanticSchemaUtils._schema_type_repr(schema, defs)
 
         # ---------- Primitives ----------
-        return PydanticSchemaUtils._schema_type_repr(schema)
+        return PydanticSchemaUtils._schema_type_repr(schema, defs)
 
     @staticmethod
-    def _schema_type_repr(schema: Dict[str, Any]) -> str:
-        # Optional / union types
+    def _schema_type_repr(schema: Dict[str, Any], defs: Dict[str, Any]) -> str:
+        # ---------- Pydantic model reference ----------
+        if "$ref" in schema:
+            ref = schema["$ref"]
+            # Example: "#/$defs/Problem"
+            if ref.startswith("#/$defs/"):
+                return ref.split("/")[-1]
+            return "object"
+
+        # ---------- Optional / Union ----------
         if "anyOf" in schema:
             return " | ".join(
-                PydanticSchemaUtils._schema_type_repr(s)
+                PydanticSchemaUtils._schema_type_repr(s, defs)
                 for s in schema["anyOf"]
             )
 
@@ -109,15 +129,15 @@ class PydanticSchemaUtils:
             return "boolean"
         if t == "array":
             item = schema.get("items", {})
-            return f"array<{PydanticSchemaUtils._schema_type_repr(item)}>"
+            return f"array<{PydanticSchemaUtils._schema_type_repr(item, defs)}>"
         if t == "object":
             return "object"
 
         return "unknown"
 
     @staticmethod
-    def _collect_excluded_fields(model: Type[BaseModel]) -> set[str]:
-        excluded: set[str] = set()
+    def _collect_excluded_fields(model: Type[BaseModel]) -> Set[str]:
+        excluded: Set[str] = set()
 
         for name, field in model.model_fields.items():
             if field.exclude:

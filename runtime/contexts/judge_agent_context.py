@@ -1,15 +1,10 @@
 import uuid
-from typing import List, Optional
-import json
 
 from llm.agents.agent import LLMAgent
-from schemas.pydantic.input.problem import Problem
 from schemas.pydantic.output.final_judgement import FinalJudgement
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
-from llm.prompts.prompts import (
-    FINAL_JUDGMENT_SYSTEM_PROMPT,
-)
+from llm.prompts.prompts import *
 
 class JudgeAgentContext:
     """
@@ -42,67 +37,30 @@ class JudgeAgentContext:
         return self.agent.config.llm_id
 
     @staticmethod
-    def build_final_judgment_user_prompt(
+    def build_final_judgement_input(
             *,
             problem: Problem,
-            solver_contexts: List[SolverAgentContext],
-    ) -> str:
+            solver_agent_contexts: List[SolverAgentContext],
+    ) -> FinalJudgementInput:
         """
-        Builds the user prompt for Stage 4 final judgment.
-
-        Input is structured, explicit, and sectioned to ensure
-        accurate evaluation under high token load.
+        Constructs the FinalJudgementInput object from solver agent contexts.
         """
 
-        if len(solver_contexts) != 3:
-            raise ValueError(
-                "Final judgment requires exactly 3 solver contexts"
+        solver_contexts: List[SolverContexts] = []
+
+        for ctx in solver_agent_contexts:
+            solver_contexts.append(
+                SolverContexts(
+                    solution=ctx.solution,
+                    received_reviews=ctx.peer_reviews,
+                    refined_solution=ctx.refined_solution,
+                )
             )
 
-        # --- Problem section ---
-        problem_payload = problem.model_dump()
-
-        solver_sections = []
-
-        for idx, ctx in enumerate(solver_contexts, start=1):
-            if ctx.solution is None:
-                raise ValueError(
-                    f"Solver {idx} has no original solution"
-                )
-
-            if ctx.refined_solution is None:
-                raise ValueError(
-                    f"Solver {idx} has no refined solution"
-                )
-
-            solver_payload = {
-                "solver_id": ctx.solver_id,
-                "original_solution": ctx.solution.model_dump(),
-                "peer_reviews_received": [
-                    review.model_dump()
-                    for review in ctx.peer_reviews
-                ],
-                "refined_solution": ctx.refined_solution.model_dump(),
-            }
-
-            solver_sections.append(
-                f"SOLVER {idx}\n{json.dumps(solver_payload, indent=2, ensure_ascii=False)}"
-            )
-
-        user_prompt = (
-            "Below is the complete input for FINAL JUDGMENT.\n"
-            "All information is provided as structured JSON per entity.\n"
-            "You must evaluate each solver independently and select exactly one winner.\n\n"
-            "PROBLEM\n"
-            f"{json.dumps(problem_payload, indent=2, ensure_ascii=False)}\n\n"
-            f"{solver_sections[0]}\n\n"
-            f"{solver_sections[1]}\n\n"
-            f"{solver_sections[2]}"
+        return FinalJudgementInput(
+            problem=problem,
+            solver_contexts=solver_contexts,
         )
-
-        print(f"[FINAL JUDGMENT USER PROMPT]: {user_prompt}")
-
-        return user_prompt
 
     async def generate_judgement(
         self,
@@ -129,9 +87,14 @@ class JudgeAgentContext:
                 )
 
         system_prompt = FINAL_JUDGMENT_SYSTEM_PROMPT
-        user_prompt = self.build_final_judgment_user_prompt(
+
+        final_input = self.build_final_judgement_input(
             problem=self.problem,
-            solver_contexts=solver_agent_contexts,
+            solver_agent_contexts=solver_agent_contexts,
+        )
+
+        user_prompt = build_final_judgement_user_prompt(
+            final_input=final_input,
         )
 
         judgement = await self.agent.run_structured_call(
