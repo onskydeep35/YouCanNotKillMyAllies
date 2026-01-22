@@ -5,11 +5,11 @@ from typing import List, Optional
 from datetime import datetime
 
 from llm.agents.agent import LLMAgent
-from schemas.pydantic.problem import Problem
-from schemas.pydantic.role_assessment import RoleAssessment
-from schemas.pydantic.problem_solution_review import ProblemSolutionReview
-from schemas.pydantic.refined_problem_solution import RefinedProblemSolution
-from schemas.pydantic.final_judgement import FinalJudgement
+from schemas.pydantic.input.problem import Problem
+from schemas.pydantic.output.role_assessment import RoleAssessment
+from schemas.pydantic.output.problem_solution_review import ProblemSolutionReview
+from schemas.pydantic.output.refined_problem_solution import RefinedProblemSolution
+from schemas.pydantic.output.final_judgement import FinalJudgement
 
 from data.persistence.firestore_writer import (
     FirestoreWriter,

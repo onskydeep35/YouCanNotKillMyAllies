@@ -3,7 +3,7 @@ import asyncio
 import time
 from typing import TypeVar
 
-from schemas.pydantic.problem import Problem
+from schemas.pydantic.input.problem import Problem
 from schemas.dataclass.agent_config import LLMAgentConfig
 from pydantic import BaseModel
 

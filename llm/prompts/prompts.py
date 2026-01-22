@@ -1,5 +1,5 @@
-from schemas.pydantic.problem import *
-from schemas.pydantic.problem_solution_review import *
+from schemas.pydantic.input.problem import *
+from schemas.pydantic.output.problem_solution_review import *
 from schemas.utilities.pydantic_schema_utils import PydanticSchemaUtils
 
 DEFAULT_SOLVER_POLICY = """
@@ -107,80 +107,92 @@ def build_solver_system_prompt(*, category: str) -> str:
     policy = SOLVER_PROMPT_BY_CATEGORY.get(category, DEFAULT_SOLVER_POLICY)
 
     return f"""
-    <system>
-      <role>
-        You are an AI agent participating in a multi-agent reasoning system.
-        Your role is to solve the given problem and return structured JSON output.
-      </role>
+<system>
+  <role>
+    You are an AI agent participating in a multi-agent reasoning system.
+    Your role is to solve the given problem and return structured JSON output.
+  </role>
 
-      <problem_category>
-        {category}
-      </problem_category>
+  <problem_category>
+    {category}
+  </problem_category>
 
-      <role_guidelines>
-        {policy}
-      </role_guidelines>
+  <role_guidelines>
+    {policy}
+  </role_guidelines>
 
-      <input_contract>
-        The full problem statement and all required inputs will be provided to you
-        as a JSON object.
-        You must rely ONLY on the contents of that JSON input.
-        Do NOT assume missing information.
-      </input_contract>
+  <input_contract>
+    The user prompt will provide the full problem and all required inputs
+    as a single JSON object.
+    
+    This JSON object follows a Pydantic-defined schema and represents
+    the authoritative input for this task.
+    
+    <schema_description>
+      {PydanticSchemaUtils.to_descriptive_pretty_json(Problem)}
+    </schema_description>
+    
+    You must:
+    - Rely ONLY on the contents of the provided JSON input
+    - Interpret all fields according to their meaning in the schema
+    - Do NOT assume missing information
+    - Do NOT infer fields that are not present
+  </input_contract>
 
-      <output_contract>
-        <schema>
-          The final output MUST strictly follow this JSON structure.
-          All fields are REQUIRED unless the schema explicitly allows otherwise.
+  <output_contract>
+    The output schema is enforced externally via a Pydantic JSON schema
+    at generation time.
 
-          {PydanticSchemaUtils.to_descriptive_pretty_json(Problem)}
-        </schema>
+    You must:
+    - Output a single valid JSON object
+    - Conform exactly to the enforced output schema
+    - Do NOT add, rename, or remove fields
+    - Do NOT include markdown, comments, or extra text
+  </output_contract>
 
-        <rules>
-          - Output a single valid JSON object and nothing else.
-          - Do NOT add, rename, or remove fields.
-          - Do NOT include markdown, comments, or extra text.
-          - Use empty arrays instead of null where applicable.
-        </rules>
-      </output_contract>
+  <answer_style>
+    When the problem asks for a specific answer (e.g., a name, option, value, or label):
+    - Output ONLY the answer itself in the answer field
+    - Do NOT add explanations, justifications, or restatements
+    - The answer must be minimal and test-style
 
-      <answer_style>
-        When the problem asks for a specific answer (e.g., a name, option, value, or label):
-        - Output ONLY the answer itself in the answer field.
-        - Do NOT add explanations, justifications, or restatements.
-        - The answer must be minimal and test-style.
+    <example>
+      Query: Out of Green, Brown, Yellow students who is telling the truth?
+      Correct: Green
+      Incorrect: "Green is telling the truth because ..."
+    </example>
+  </answer_style>
 
-        <example>
-          Query: Out of Green, Brown, Yellow students who is telling the truth?
-          Correct: Green
-          Incorrect: "Green is telling the truth because ..."
-        </example>
-      </answer_style>
-
-      <global_rules>
-        - Follow the Solver role strictly.
-        - Do not assume missing information.
-        - Do not include extra fields beyond the JSON schema.
-        - Do not output markdown or commentary.
-        - If uncertain, explicitly state uncertainty ONLY in the designated schema fields.
-      </global_rules>
-    </system>
-    """.strip()
+  <global_rules>
+    - Follow the Solver role strictly
+    - Do not assume missing information
+    - Do not output markdown or commentary
+    - If uncertain, explicitly state uncertainty ONLY in the designated schema fields
+  </global_rules>
+</system>
+""".strip()
 
 def build_solver_user_prompt(problem: Problem) -> str:
-    return f"""
-        Solve the following problem.
-        
-        Problem Category: {problem.category}
-        Problem Statement:
-        {problem.statement}
-        
-        IMPORTANT:
-        - Generate final answer after you finish solving the problem with reasoning.
-        - If a correct solution cannot be derived with confidence,
-          return "answer": "UNSURE".
-        - Still explain where reasoning becomes uncertain.
     """
+    Build the user prompt by providing the authoritative
+    Problem input as JSON.
+    """
+
+    problem_json = problem.model_dump(mode="json")
+
+    return f"""
+<user_input>
+  The following JSON object is the authoritative input for this task.
+  It conforms to the predefined Problem schema.
+
+  You must rely ONLY on this JSON to solve the problem.
+   
+  <problem_json>  
+  {json.dumps(problem_json, indent=2, ensure_ascii=False)}
+  </problem_json>
+</user_input>
+""".strip()
+
 
 PEER_REVIEW_SYSTEM_PROMPT = """
 You are an expert peer reviewer evaluating another AI's solution.
@@ -198,7 +210,7 @@ Rules:
 """.strip()
 
 import json
-from schemas.pydantic.problem_solution import *
+from schemas.pydantic.output.problem_solution import *
 
 
 def build_peer_review_user_prompt(

@@ -6,12 +6,12 @@ import json
 class PydanticSchemaUtils:
     """
     Static utilities for converting Pydantic models into
-    LLM-friendly JSON example schemas.
+    LLM-friendly descriptive JSON schemas.
 
     - Respects Field(exclude=True)
     - Respects model_config['exclude']
     - Uses field descriptions
-    - Produces stable, prompt-safe output
+    - Emits TYPE information (not example values)
     """
 
     @staticmethod
@@ -20,9 +20,6 @@ class PydanticSchemaUtils:
         *,
         include_descriptions: bool = True,
     ) -> Dict[str, Any]:
-        """
-        Generate a JSON example skeleton from a Pydantic model.
-        """
         schema = model.model_json_schema()
         excluded_fields = PydanticSchemaUtils._collect_excluded_fields(model)
 
@@ -40,9 +37,6 @@ class PydanticSchemaUtils:
         indent: int = 2,
         sort_keys: bool = False,
     ) -> str:
-        """
-        Generate a pretty-printed JSON example string from a Pydantic model.
-        """
         example = PydanticSchemaUtils.to_descriptive_json(
             model,
             include_descriptions=include_descriptions,
@@ -74,65 +68,61 @@ class PydanticSchemaUtils:
             properties = schema.get("properties", {})
 
             for field_name, field_schema in properties.items():
-                # 🔒 Skip excluded fields
                 if field_name in excluded_fields:
                     continue
-
-                example = PydanticSchemaUtils._build_example_from_schema(
-                    schema=field_schema,
-                    excluded_fields=set(),
-                    include_descriptions=include_descriptions,
-                )
 
                 if include_descriptions and "description" in field_schema:
                     result[field_name] = {
                         "_description": field_schema["description"],
-                        "_value": example,
+                        "_type": PydanticSchemaUtils._schema_type_repr(field_schema),
                     }
                 else:
-                    result[field_name] = example
+                    result[field_name] = PydanticSchemaUtils._schema_type_repr(field_schema)
 
             return result
 
         # ---------- Arrays ----------
         if schema_type == "array":
-            items_schema = schema.get("items", {})
-            return [
-                PydanticSchemaUtils._build_example_from_schema(
-                    schema=items_schema,
-                    excluded_fields=set(),
-                    include_descriptions=include_descriptions,
-                )
-            ]
+            return PydanticSchemaUtils._schema_type_repr(schema)
 
         # ---------- Primitives ----------
-        return PydanticSchemaUtils._primitive_placeholder(schema)
+        return PydanticSchemaUtils._schema_type_repr(schema)
 
     @staticmethod
-    def _primitive_placeholder(schema: Dict[str, Any]) -> Any:
+    def _schema_type_repr(schema: Dict[str, Any]) -> str:
+        # Optional / union types
+        if "anyOf" in schema:
+            return " | ".join(
+                PydanticSchemaUtils._schema_type_repr(s)
+                for s in schema["anyOf"]
+            )
+
         t = schema.get("type")
 
         if t == "string":
             return "string"
         if t == "integer":
-            return 0
+            return "integer"
         if t == "number":
-            return 0.0
+            return "number"
         if t == "boolean":
-            return False
+            return "boolean"
+        if t == "array":
+            item = schema.get("items", {})
+            return f"array<{PydanticSchemaUtils._schema_type_repr(item)}>"
+        if t == "object":
+            return "object"
 
-        return None
+        return "unknown"
 
     @staticmethod
     def _collect_excluded_fields(model: Type[BaseModel]) -> set[str]:
         excluded: set[str] = set()
 
-        # Field-level exclude=True
         for name, field in model.model_fields.items():
             if field.exclude:
                 excluded.add(name)
 
-        # Model-level exclude config
         model_exclude = model.model_config.get("exclude")
         if isinstance(model_exclude, (set, list, tuple)):
             excluded.update(model_exclude)

@@ -3,8 +3,8 @@ from typing import List, Optional
 import json
 
 from llm.agents.agent import LLMAgent
-from schemas.pydantic.problem import Problem
-from schemas.pydantic.final_judgement import FinalJudgement
+from schemas.pydantic.input.problem import Problem
+from schemas.pydantic.output.final_judgement import FinalJudgement
 
 from runtime.contexts.solver_agent_context import SolverAgentContext
 from llm.prompts.prompts import (

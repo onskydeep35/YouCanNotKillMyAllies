@@ -3,7 +3,7 @@ from pathlib import Path
 
 from runtime.app import ProblemSolvingApp
 from schemas.dataclass.agent_config import LLMAgentConfig
-
+from llm.prompts.prompts import *
 
 def create_llm_configs():
     """
@@ -49,6 +49,8 @@ def create_llm_configs():
 
 
 async def main():
+    print(build_solver_system_prompt(category="cat"))
+
     app = ProblemSolvingApp(
         problems_path=Path("data/datasets/problems.json"),
         agent_configs=create_llm_configs(),

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from llm.agents.agent import LLMAgent
 from llm.agents.agent_factory import AgentFactory
-from schemas.pydantic.problem import Problem
+from schemas.pydantic.input.problem import Problem
 from schemas.dataclass.agent_config import LLMAgentConfig
 from data.persistence.firestore_client import get_firestore_client
 from data.persistence.firestore_writer import FirestoreWriter
