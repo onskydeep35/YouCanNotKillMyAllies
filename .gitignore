@@ -3,3 +3,4 @@
 .idea/
 firebase_admin.json
 data/output/
+venv/
