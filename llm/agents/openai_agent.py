@@ -29,9 +29,8 @@ class OpenAIAgent(LLMAgent):
                 {"role": "user", "content": user_prompt},
             ],
             text_format=output_model,
-            **gen_kwargs,   # ← generic kwargs
+            **gen_kwargs,  # ← generic kwargs
         )
-
 
         print(
             f"\n[RAW OPENAI OUTPUT] "
@@ -40,6 +39,5 @@ class OpenAIAgent(LLMAgent):
             f"instance={instance_id}\n"
             f"{response.output_text}\n"
         )
-
 
         return response.output_parsed

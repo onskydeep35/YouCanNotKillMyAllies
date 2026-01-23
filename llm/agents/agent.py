@@ -36,16 +36,16 @@ class LLMAgent(ABC):
         )
 
     async def _run_llm_call(
-            self,
-            *,
-            system_prompt: str,
-            user_prompt: str,
-            output_model: type[T],
-            timeout_sec: int,
-            log_interval_sec: int,
-            instance_id: str,
-            method_type: str,
-            post_call_delay_sec: float = 5,
+        self,
+        *,
+        system_prompt: str,
+        user_prompt: str,
+        output_model: type[T],
+        timeout_sec: int,
+        log_interval_sec: int,
+        instance_id: str,
+        method_type: str,
+        post_call_delay_sec: float = 5,
     ) -> T:
 
         start_time = time.monotonic()
@@ -115,4 +115,19 @@ class LLMAgent(ABC):
         method_type: str,
         instance_id: str,
     ) -> T:
+        """Call the LLM provider with structured output parsing.
+
+        This method must be implemented by each provider-specific agent subclass
+        to handle the provider's API and response format.
+
+        Args:
+            system_prompt: The system-level instruction for the model.
+            user_prompt: The user input/query for the model.
+            output_model: The Pydantic model class for structured output validation.
+            method_type: The method/task type for logging and debugging.
+            instance_id: A unique identifier for this invocation instance.
+
+        Returns:
+            An instance of output_model containing the parsed API response.
+        """
         pass

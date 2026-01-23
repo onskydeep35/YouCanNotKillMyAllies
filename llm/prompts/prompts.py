@@ -365,7 +365,7 @@ def build_peer_review_user_prompt(
 
       <ReviewInput>  
         {json.dumps(review_input_json, indent=2, ensure_ascii=False)}
-      <ReviewInput>
+      </ReviewInput>
     </user_input>
     """.strip()
 
@@ -483,7 +483,7 @@ def build_solution_refinement_user_prompt(
 
       <SolutionRefinementInput>  
         {json.dumps(solution_refinement_input_json, indent=2, ensure_ascii=False)}
-      <SolutionRefinementInput>
+      </SolutionRefinementInput>
     </user_input>
     """.strip()
 
