@@ -10,9 +10,11 @@ from llm.agents.agent_factory import AgentFactory
 from schemas.pydantic.input.problem import Problem
 from schemas.dataclass.agent_config import LLMAgentConfig
 from data.persistence.firestore_client import get_firestore_client
-from data.persistence.firestore_writer import FirestoreWriter
+from data.persistence.firestore_manager import FirestoreManager
 
-from runtime.problem_solving_session import ProblemSolvingSession  # single-problem session
+from runtime.problem_solving_session import (
+    ProblemSolvingSession,
+)  # single-problem session
 
 
 class ProblemSolvingApp:
@@ -54,10 +56,10 @@ class ProblemSolvingApp:
         problems = [Problem.model_validate(p) for p in raw]
 
         if self.problems_skip:
-            problems = problems[self.problems_skip:]
+            problems = problems[self.problems_skip :]
 
         if self.problems_take is not None:
-            problems = problems[:self.problems_take]
+            problems = problems[: self.problems_take]
 
         self.problems = problems
 
@@ -80,7 +82,7 @@ class ProblemSolvingApp:
 
         # Firestore lifecycle: once per run
         db = get_firestore_client()
-        writer = FirestoreWriter(db)
+        writer = FirestoreManager(db)
 
         print(
             f"\n[RUN START] "
@@ -117,6 +119,4 @@ class ProblemSolvingApp:
                 f"==========\n"
             )
 
-        print(
-            f"\n[RUN END] run_id={self.run_id}\n"
-        )
+        print(f"\n[RUN END] run_id={self.run_id}\n")
