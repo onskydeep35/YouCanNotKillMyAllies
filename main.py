@@ -77,6 +77,7 @@ async def main():
     await app.run(
         timeout_sec=DEFAULT_TIMEOUT_SEC,
         log_interval_sec=LOG_INTERVAL_SEC,
+        max_concurrent_sessions=7,
     )
 
 

@@ -35,7 +35,7 @@ class ProblemSolvingSession:
         agents: List[LLMAgent],
         firestore_manager: FirestoreManager,
         output_dir: Path,
-        max_concurrency: int = 4,
+        max_concurrency: int = 6,
     ):
         self.run_id = run_id
         self.problem = problem

@@ -47,6 +47,12 @@ class FinalJudgement(BaseModel):
         description="Identifier of the problem for this assessment (excluded from model output)"
     )
 
+    winner_solver_id: str | None = Field(
+        default=None,
+        exclude=True,
+        description="The most accurate and the best solution author LLM id (excluded from model output)"
+    )
+
     reasoning: List[str] = Field(
         ..., description="Step-by-step reasoning leading to the answer"
     )

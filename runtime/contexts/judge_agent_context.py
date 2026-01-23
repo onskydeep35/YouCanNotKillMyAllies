@@ -107,14 +107,48 @@ class JudgeAgentContext:
             log_interval_sec=log_interval_sec,
         )
 
+        winner_ctx = JudgeAgentContext.resolve_winner_context(
+            winner_solver=judgement.winner_solver,
+            solver_agent_contexts=solver_agent_contexts,
+        )
+
         judgement.prompt_system = system_prompt
         judgement.prompt_user = user_prompt
         judgement.llm_id = self.judge_id
         judgement.run_id = self.run_id
         judgement.problem_id = self.problem.problem_id
         judgement.judgement_id = uuid.uuid4().hex
+        judgement.winner_solver_id = winner_ctx.solver_id
+        judgement.answer = winner_ctx.refined_solution.refined_answer
         judgement.time_elapsed_sec = judgement.time_elapsed_sec
 
         self.judgment = judgement
         return judgement
+
+    @staticmethod
+    def resolve_winner_context(
+            *,
+            winner_solver: str,
+            solver_agent_contexts: List[SolverAgentContext],
+    ) -> SolverAgentContext:
+        """
+        Maps FinalJudgement.winner_solver ("Solver 1|2|3")
+        to the corresponding SolverAgentContext by index.
+        """
+
+        try:
+            # "Solver 1" -> 1 -> index 0
+            solver_number = int(winner_solver.split()[-1])
+            index = solver_number - 1
+        except (IndexError, ValueError):
+            raise ValueError(f"Invalid winner_solver format: {winner_solver}")
+
+        if index < 0 or index >= len(solver_agent_contexts):
+            raise IndexError(
+                f"Winner solver index {index} out of bounds "
+                f"(len={len(solver_agent_contexts)})"
+            )
+
+        return solver_agent_contexts[index]
+
 
