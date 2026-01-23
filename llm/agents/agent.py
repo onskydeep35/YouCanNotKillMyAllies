@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import asyncio
 import time
-from typing import TypeVar
+from typing import TypeVar, Optional
 
 from schemas.pydantic.input.problem import Problem
 from schemas.dataclass.agent_config import LLMAgentConfig
@@ -24,7 +24,8 @@ class LLMAgent(ABC):
         method_type: str,
         timeout_sec: int = 2000,
         log_interval_sec: int = 5,
-    ) -> T:
+        max_retries: int = 3,
+    ) -> Optional[T]:
         return await self._run_llm_call(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
@@ -33,6 +34,7 @@ class LLMAgent(ABC):
             log_interval_sec=log_interval_sec,
             instance_id=problem.problem_id,
             method_type=method_type,
+            max_retries=max_retries,
         )
 
     async def _run_llm_call(
@@ -45,8 +47,9 @@ class LLMAgent(ABC):
         log_interval_sec: int,
         instance_id: str,
         method_type: str,
+        max_retries: int,
         post_call_delay_sec: float = 5,
-    ) -> T:
+    ) -> Optional[T]:
 
         start_time = time.monotonic()
 
@@ -67,23 +70,54 @@ class LLMAgent(ABC):
         progress_task = asyncio.create_task(log_progress())
 
         try:
-            result: T = await asyncio.wait_for(
-                asyncio.to_thread(
-                    self._call_provider,
-                    system_prompt=system_prompt,
-                    user_prompt=user_prompt,
-                    output_model=output_model,
-                    method_type=method_type,
-                    instance_id=instance_id,
-                ),
-                timeout=timeout_sec,
+            last_exception: Exception | None = None
+
+            for attempt in range(1, max_retries + 1):
+                try:
+                    result: T = await asyncio.wait_for(
+                        asyncio.to_thread(
+                            self._call_provider,
+                            system_prompt=system_prompt,
+                            user_prompt=user_prompt,
+                            output_model=output_model,
+                            method_type=method_type,
+                            instance_id=instance_id,
+                        ),
+                        timeout=timeout_sec,
+                    )
+
+                    elapsed = time.monotonic() - start_time
+                    if hasattr(result, "time_elapsed_sec"):
+                        result.time_elapsed_sec = elapsed
+
+                    return result
+
+                except Exception as e:
+                    last_exception = e
+                    print(
+                        f"[retry] agent={self.config.llm_id} "
+                        f"method={method_type} "
+                        f"instance={instance_id} "
+                        f"attempt={attempt}/{max_retries} "
+                        f"error={type(e).__name__}: {e}"
+                    )
+
+                    # small linear backoff
+                    await asyncio.sleep(2 * attempt)
+
+            # all retries failed
+            print(
+                f"[failed] agent={self.config.llm_id} "
+                f"method={method_type} "
+                f"instance={instance_id} "
+                f"retries_exhausted"
             )
 
-            elapsed = time.monotonic() - start_time
-            if hasattr(result, "time_elapsed_sec"):
-                result.time_elapsed_sec = elapsed
-
-            return result
+            # try returning a default object if possible
+            try:
+                return output_model()  # type: ignore[arg-type]
+            except Exception:
+                return None
 
         finally:
             progress_task.cancel()
@@ -95,6 +129,7 @@ class LLMAgent(ABC):
         Build generic generation kwargs.
         Providers may ignore unsupported fields.
         """
+
         kwargs = {}
 
         if self.config.temperature is not None:

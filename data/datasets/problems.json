@@ -1,122 +1,162 @@
 [
   {
-    "problem_id": "logic_001",
+    "problem_id": "problem_001",
     "category": "Logic Puzzles & Constraint Satisfaction",
-    "subcategory": "Truth-tellers and Liars",
-    "statement": "There are two men. One of them is wearing a red shirt, and the other is wearing a blue shirt. The two men are named Andrew and Bob, but we do not know which is Andrew and which is Bob.\n\nThe man in the blue shirt says, \"I am Andrew.\" The man in the red shirt says, \"I am Bob.\"\n\nIf we know that at least one of them lied, then what color shirt is Andrew wearing?",
-    "ground_answer": "red",
-    "difficulty": "easy"
+    "subcategory": "Counterfeit Coins",
+    "difficulty": "medium",
+    "statement": "You have 8 real coins and 1 fake coin. All real coins weigh the same, and the fake coin weighs less. You are given a two-plate balance scale that only tells which side is heavier. What is the minimum number of weighings required to determine the fake coin?",
+    "ground_answer": "2"
   },
   {
-    "problem_id": "logic_002",
+    "problem_id": "problem_002",
     "category": "Logic Puzzles & Constraint Satisfaction",
-    "subcategory": "Truthfulness",
-    "statement": "There are 3 boxes, exactly one of which has a car. You can keep the car if you pick the correct box.\n\nOn each box there is a statement, exactly one of which is true.\n\nBox 1: \"The car is in this box.\"\nBox 2: \"The car is not in this box.\"\nBox 3: \"The car is not in box 1.\"\n\nWhich box has the car?",
-    "ground_answer": "Box 2",
-    "difficulty": "medium"
+    "subcategory": "Counterfeit Coins",
+    "difficulty": "hard",
+    "statement": "You have 11 real coins and 1 fake coin. All real coins weigh the same, but the fake coin may weigh either more or less. You are given a two-plate balance scale that only tells which side is heavier. What is the minimum number of weighings required to determine the fake coin?",
+    "ground_answer": "3"
   },
   {
-    "problem_id": "logic_003",
+    "problem_id": "problem_003",
     "category": "Logic Puzzles & Constraint Satisfaction",
-    "subcategory": "Truthfulness",
-    "statement": "Mr. Robin asks his 5 students whether they studied maths yesterday.\n\nWhite: \"No one studied maths yesterday.\"\nBrown: \"1 person studied maths yesterday.\"\nGray: \"2 people studied maths yesterday.\"\nBlue: \"3 people studied maths yesterday.\"\nBlack: \"4 people studied maths yesterday.\"\n\nMr. Robin knows that only those who studied would be telling the truth and those who didn't would be lying. Who is telling the truth?",
-    "ground_answer": "Gray",
-    "difficulty": "medium"
+    "subcategory": "Liars and Truth Tellers",
+    "difficulty": "hard",
+    "statement": "There are 24 people on an island, each of whom is either a liar or a truth-teller. To determine the number of liars, each person is asked: \"How many liars are on the island?\" The nth person replies that the number of liars is a multiple of n, for n = 1, 2, …, 24. How many liars are on the island?",
+    "ground_answer": "18"
   },
   {
-    "problem_id": "logic_004",
+    "problem_id": "problem_004",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Rates and Motion",
+    "difficulty": "easy",
+    "statement": "At the bottom of a 20-meter-deep hole there is a frog. Each day it climbs 4 meters upward, and each night it slips back down 3 meters. On which day does the frog escape the hole?",
+    "ground_answer": "17"
+  },
+  {
+    "problem_id": "problem_005",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Tiling Problems",
+    "difficulty": "medium",
+    "statement": "An 8×8 chessboard has the two squares at the ends of its main diagonal removed. Is it possible to tile the remaining board completely using 1×2 dominoes?",
+    "ground_answer": "no"
+  },
+  {
+    "problem_id": "problem_006",
+    "category": "Strategic Game Theory",
+    "subcategory": "Combinatorial Games",
+    "difficulty": "hard",
+    "statement": "Two players play a game on a perfectly round table. Each player has an unlimited number of identical coins. On each turn, a player places one coin on the table such that it does not overlap or move any existing coins. The player who cannot make a legal move loses. If Player 1 starts and both players play optimally, who will win the game?",
+    "ground_answer": "Player 1"
+  },
+  {
+    "problem_id": "problem_007",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Weighing Puzzles",
+    "difficulty": "easy",
+    "statement": "You have 10 bags of coins. Nine bags contain only real coins weighing 10 grams each, and one bag contains only fake coins weighing 9 grams each. You have a scale that tells the exact weight in grams. What is the minimum number of weighings needed to determine which bag contains the fake coins?",
+    "ground_answer": "1"
+  },
+  {
+    "problem_id": "problem_008",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Weighing Puzzles",
+    "difficulty": "medium",
+    "statement": "You have 10 bags of coins. Some bags contain only real coins weighing 10 grams each, and some contain only fake coins weighing 9 grams each. You have a scale that tells the exact weight in grams. What is the minimum number of weighings needed to determine which bags contain fake coins?",
+    "ground_answer": "1"
+  },
+  {
+    "problem_id": "problem_009",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Truth Statements",
+    "difficulty": "medium",
+    "statement": "Nika claims that people who live on \"liars island\" never tell the truth. Levan claims that Nika's statement is false. It is known that Nika lives on liars island and Levan has never been there. Who is telling the truth?",
+    "ground_answer": "Levan"
+  },
+  {
+    "problem_id": "problem_010",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Optimization and Scheduling",
+    "difficulty": "easy",
+    "statement": "To make one side of a fish edible, it must be cooked on a hot stove for 5 minutes. The stove can cook at most two fish at the same time. What is the minimum total time needed to make three fish edible on one side?",
+    "ground_answer": "15"
+  },
+  {
+    "problem_id": "problem_011",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Geometric Reasoning",
+    "difficulty": "medium",
+    "statement": "A helicopter follows a programmed route: it flies 100 km north, then 100 km east, then 100 km west, and finally 100 km south. If the helicopter starts from a point on the surface of the Earth, will it return to the same point after completing the route?",
+    "ground_answer": "no"
+  },
+  {
+    "problem_id": "problem_012",
+    "category": "Mathematical / Geometric Probability",
+    "subcategory": "Random Cuts",
+    "difficulty": "hard",
+    "statement": "You have many chocolate bars of unit length and start breaking each of them into three pieces by randomly choosing two points on the bar. What are the average lengths of the shortest, medium, and longest pieces? If the product of these averages can be expressed as p/q, where p and q are coprime positive integers, give your answer as p + q.",
+    "ground_answer": "2971"
+  },
+  {
+    "problem_id": "problem_013",
+    "category": "Mathematical / Geometric Probability",
+    "subcategory": "High-Dimensional Geometry",
+    "difficulty": "medium",
+    "statement": "Alex, Bob, and Charlie each randomly pick a real number between 0 and 1. What is the probability that the sum of the squares of their numbers does not exceed 1?",
+    "ground_answer": "pi/6"
+  },
+  {
+    "problem_id": "problem_014",
+    "category": "Mathematical / Geometric Probability",
+    "subcategory": "Broken Stick Problem",
+    "difficulty": "medium",
+    "statement": "Two points are chosen randomly and uniformly along a stick of length 1. The stick is cut at those points to form three pieces. What is the probability that these pieces can form a triangle?",
+    "ground_answer": "1/4"
+  },
+  {
+    "problem_id": "problem_015",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
+    "difficulty": "easy",
     "statement": "In a magical swamp, there are two species of talking amphibians: toads whose statements are always true, and frogs whose statements are always false.\n\nFour amphibians, Brian, Chris, LeRoy, and Mike live together in this swamp, and they make the following statements:\n\nBrian: \"Mike and I are different species.\"\nChris: \"LeRoy is a frog.\"\nLeRoy: \"Chris is a frog.\"\nMike: \"Of the four of us, at least two are toads.\"\n\nHow many of these amphibians are frogs?",
-    "ground_answer": "3",
-    "difficulty": "hard"
+    "ground_answer": "3"
   },
   {
-    "problem_id": "logic_005",
+    "problem_id": "problem_016",
     "category": "Logic Puzzles & Constraint Satisfaction",
     "subcategory": "Truthfulness",
-    "statement": "It is known that octopuses with 7 legs always lie, while those with 6 legs and those with 8 legs always tell the truth.\n\nOne night, four octopuses met:\n\nGreen: \"We have 27 legs.\"\nBlack: \"We have 28 legs.\"\nRed: \"We have 25 legs.\"\nYellow: \"We have 26 legs.\"\n Who spoke the truth?",
-    "ground_answer": "Green",
-    "difficulty": "medium"
-  },
-  {
-    "problem_id": "logic_006",
-    "category": "Logic Puzzles & Constraint Satisfaction",
-    "subcategory": "Truthfulness",
+    "difficulty": "easy",
     "statement": "On the island of Knights and Knaves, I met three people A, B, and C, one of whom is a knight, another is a knave, and the other is a spy. The knight always tells the truth, the knave always lies, and the spy can either lie or tell the truth.\n\nA says: \"I am the knight.\"\nB says: \"I am the knave.\"\nC says: \"I am the spy.\"",
-    "ground_answer": "B",
-    "difficulty": "medium"
+    "ground_answer": "B"
   },
   {
-    "problem_id": "math_007",
+    "problem_id": "problem_017",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Conditional Probability",
+    "difficulty": "hard",
+    "statement": "Mr. Jones has two children. It is known that at least one of them is a boy who was born on a Tuesday. What is the probability that Mr. Jones has two boys?",
+    "ground_answer": "13/27"
+  },
+  {
+    "problem_id": "problem_018",
     "category": "Mathematical/Logical Reasoning",
-    "subcategory": "Number Theory",
-    "statement": "What is the smallest positive integer that is divisible by all integers from 1 to 10?",
-    "ground_answer": "2520",
-    "difficulty": "easy"
+    "subcategory": "Probability and Random Processes",
+    "difficulty": "medium",
+    "statement": "An airplane has 100 seats numbered from 1 to 100 and 100 passengers boarding in a random order. Each passenger has an assigned seat number. The first passenger ignores their boarding pass and chooses a seat at random. Each subsequent passenger takes their assigned seat if it is available; otherwise, they randomly choose from the remaining seats. What is the probability that the last passenger sits in their assigned seat? Give the answer as a decimal.",
+    "ground_answer": "0.5"
   },
   {
-    "problem_id": "math_008",
-    "category": "Mathematical/Logical Reasoning",
-    "subcategory": "Combinatorics",
-    "statement": "In how many ways can you arrange the letters in the word 'STATISTICS'?",
-    "ground_answer": "50400",
-    "difficulty": "medium"
+    "problem_id": "problem_019",
+    "category": "Strategic Game Theory",
+    "subcategory": "Combinatorial Games",
+    "difficulty": "hard",
+    "statement": "At a party with 99 guests, the hosts Ann and Bob play a game (the hosts themselves are not counted as guests). There are 99 chairs arranged in a circle, and initially all guests are standing. The hosts take turns alternately, with Ann moving first. On a turn, a host orders any standing guest to sit on an unoccupied chair c. If at least one chair adjacent to c is already occupied, the same host must order one guest sitting on such an adjacent chair to stand up (if both adjacent chairs are occupied, the host chooses exactly one of them). All orders are carried out immediately. Ann’s goal is to ensure that after some move of hers, at least k chairs are occupied. Determine the largest value of k that Ann can guarantee, regardless of how Bob plays.",
+    "ground_answer": "34"
   },
   {
-    "problem_id": "math_009",
-    "category": "Mathematical/Logical Reasoning",
-    "subcategory": "Probability",
-    "statement": "A fair six-sided die is rolled twice. What is the probability that the sum of the two rolls is exactly 7?",
-    "ground_answer": "1/6",
-    "difficulty": "easy"
-  },
-  {
-    "problem_id": "math_010",
-    "category": "Mathematical/Logical Reasoning",
-    "subcategory": "Algebra",
-    "statement": "If x^2 + y^2 = 25 and x + y = 7, what is the value of xy?",
-    "ground_answer": "12",
-    "difficulty": "medium"
-  },
-  {
-    "problem_id": "math_011",
-    "category": "Mathematical/Logical Reasoning",
-    "subcategory": "Series",
-    "statement": "What is the sum of the first 100 positive integers?",
-    "ground_answer": "5050",
-    "difficulty": "easy"
-  },
-  {
-    "problem_id": "physics_012",
-    "category": "Physics & Scientific Reasoning",
-    "subcategory": "Kinematics",
-    "statement": "A ball is thrown vertically upward with an initial velocity of 20 m/s. Assuming g = 10 m/s² and no air resistance, how high does it go before falling back down?",
-    "ground_answer": "20 meters",
-    "difficulty": "medium"
-  },
-  {
-    "problem_id": "physics_013",
-    "category": "Physics & Scientific Reasoning",
-    "subcategory": "Forces",
-    "statement": "A 5 kg block rests on a horizontal surface. If a horizontal force of 30 N is applied and the coefficient of kinetic friction is 0.4, what is the acceleration of the block? (Use g = 10 m/s²)",
-    "ground_answer": "2 m/s²",
-    "difficulty": "medium"
-  },
-  {
-    "problem_id": "physics_014",
-    "category": "Physics & Scientific Reasoning",
-    "subcategory": "Energy",
-    "statement": "A 2 kg object moving at 5 m/s collides with a stationary 3 kg object in a perfectly inelastic collision. What is the final velocity of the combined objects?",
-    "ground_answer": "2 m/s",
-    "difficulty": "medium"
-  },
-  {
-    "problem_id": "physics_015",
-    "category": "Physics & Scientific Reasoning",
-    "subcategory": "Optics",
-    "statement": "Light travels from air (refractive index = 1.0) into water (refractive index = 1.33) at an angle of incidence of 30°. What is the angle of refraction? (Use Snell's law: n1*sin(θ1) = n2*sin(θ2))",
-    "ground_answer": "22 degrees",
-    "difficulty": "hard"
+    "problem_id": "problem_020",
+    "category": "Logic Puzzles & Constraint Satisfaction",
+    "subcategory": "Truthfulness",
+    "difficulty": "easy",
+    "statement": "In a magical swamp, there are two species of talking amphibians: toads whose statements are always true, and frogs whose statements are always false.\n\nFour amphibians, Brian, Chris, LeRoy, and Mike live together in this swamp, and they make the following statements:\n\nBrian: \"Mike and I are different species.\"\nChris: \"LeRoy is a frog.\"\nLeRoy: \"Chris is a frog.\"\nMike: \"Of the four of us, at least two are toads.\"\n\nHow many of these amphibians are frogs?",
+    "ground_answer": "3"
   }
 ]

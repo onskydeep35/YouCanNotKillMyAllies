@@ -7,8 +7,8 @@ from schemas.pydantic.output.role_assessment import RoleAssessment
 from schemas.pydantic.output.final_judgement import FinalJudgement
 from schemas.utilities import *
 
-from data.persistence.firestore_writer import (
-    FirestoreWriter,
+from data.persistence.firestore_manager import (
+    FirestoreManager,
     SOLUTIONS,
     SOLUTION_REVIEWS,
     REFINED_SOLUTIONS,
@@ -33,7 +33,7 @@ class ProblemSolvingSession:
         run_id: str,
         problem: Problem,
         agents: List[LLMAgent],
-        writer: FirestoreWriter,
+        writer: FirestoreManager,
         output_dir: Path,
         max_concurrency: int = 4,
     ):
@@ -148,21 +148,18 @@ class ProblemSolvingSession:
 
                 return assessment
 
-
-
-
         results = await asyncio.gather(*[assess(c) for c in contexts])
 
         def overall_capability(a: RoleAssessment) -> float:
             """Pick the 4 most capable agents regardless of role preference"""
             return max(a.judge_score, a.solver_score)
-        
+
         results.sort(key=overall_capability, reverse=True)
         top_4 = results[:4]
 
         if len(top_4) < 4:
             raise RuntimeError(f"Need at least 4 agents, got {len(results)}")
-        
+
         print(f"[SELECTED TOP 4 from {len(results)} agents]")
         for idx, a in enumerate(top_4, start=1):
             print(f"  #{idx}: {a.llm_id} (best score: {overall_capability(a):.2f})")
@@ -180,9 +177,6 @@ class ProblemSolvingSession:
 
         judge_id = top_4[0].llm_id
         solver_ids = [a.llm_id for a in top_4[1:4]]
-
-
-
 
         print("[ROLE ASSIGNMENT]")
         print(f"  Judge : {judge_id}")

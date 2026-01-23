@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 # Core experiment collections
 RUNS = "Runs"
@@ -9,7 +9,8 @@ REFINED_SOLUTIONS = "RefinedSolutions"
 FINAL_JUDGEMENTS = "FinalJudgements"
 METRICS = "Metrics"
 
-class FirestoreWriter:
+
+class FirestoreManager:
     def __init__(self, db):
         self.db = db
 
@@ -32,3 +33,28 @@ class FirestoreWriter:
             col_ref.document(document_id).set(document)
         else:
             col_ref.add(document)
+
+    async def dump_collection(
+        self,
+        *,
+        collection: str,
+        include_document_id: bool = True,
+    ) -> List[Dict[str, Any]]:
+        """
+        Dumps all documents from a Firestore collection.
+
+        Returns a list of dictionaries.
+        Optionally injects document_id into each record.
+        """
+        col_ref = self.db.collection(collection)
+        docs = col_ref.stream()
+
+        results: List[Dict[str, Any]] = []
+
+        for doc in docs:
+            data = doc.to_dict()
+            if include_document_id:
+                data["_document_id"] = doc.id
+            results.append(data)
+
+        return results
