@@ -8,6 +8,7 @@ SOLUTION_REVIEWS = "SolutionReviews"
 REFINED_SOLUTIONS = "RefinedSolutions"
 FINAL_JUDGEMENTS = "FinalJudgements"
 METRICS = "Metrics"
+PROBLEMS = "Problems"
 
 
 class FirestoreManager:

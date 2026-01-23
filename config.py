@@ -11,8 +11,8 @@ LOG_INTERVAL_SEC = 10
 MAX_CONCURRENCY = 5
 
 # Problem Selection (for testing)
-PROBLEMS_SKIP = 0
-PROBLEMS_TAKE = 23
+PROBLEMS_SKIP = 20
+PROBLEMS_TAKE = 3
 
 # Output Paths
 DEFAULT_OUTPUT_DIR = "data/output"

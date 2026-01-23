@@ -12,19 +12,20 @@ def create_llm_configs():
         # -----------------
         # OpenAI
         # -----------------
+
         LLMAgentConfig(
-            provider="openai",
-            llm_id="gpt-4.1",
-            model="gpt-4.1",
-            temperature=0.2,
-            top_p=0.85,
+            provider="gemini",
+            llm_id="gemini-3-pro-1",
+            model="gemini-3-pro-preview",
+            temperature=0.6,
+            top_p=0.9,
         ),
         LLMAgentConfig(
-            provider="openai",
-            llm_id="gpt-5-mini",
-            model="gpt-5-mini",
-            # temperature=0.7,
-            # top_p=0.95,
+            provider="gemini",
+            llm_id="gemini-3-flash-1",
+            model="gemini-3-flash-preview",
+            temperature=0.3,
+            top_p=0.95,
         ),
 
         # -----------------
