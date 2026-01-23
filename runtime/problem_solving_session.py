@@ -7,8 +7,8 @@ from schemas.pydantic.output.role_assessment import RoleAssessment
 from schemas.pydantic.output.final_judgement import FinalJudgement
 from schemas.utilities import *
 
-from data.persistence.firestore_manager import (
-    FirestoreManager,
+from data.persistence.firestore_writer import (
+    FirestoreWriter,
     SOLUTIONS,
     SOLUTION_REVIEWS,
     REFINED_SOLUTIONS,
@@ -33,14 +33,14 @@ class ProblemSolvingSession:
         run_id: str,
         problem: Problem,
         agents: List[LLMAgent],
-        firestore_manager: FirestoreManager,
+        writer: FirestoreWriter,
         output_dir: Path,
-        max_concurrency: int = 6,
+        max_concurrency: int = 4,
     ):
         self.run_id = run_id
         self.problem = problem
         self.agents = agents
-        self.firestore_manager = firestore_manager
+        self.writer = writer
         self.output_dir = output_dir
         self.semaphore = asyncio.Semaphore(max_concurrency)
 
@@ -93,7 +93,7 @@ class ProblemSolvingSession:
             "timestamp": datetime.now(),
         }
 
-        await self.firestore_manager.write(
+        await self.writer.write(
             collection=RUNS, document=document, document_id=self.run_id
         )
 
@@ -122,48 +122,62 @@ class ProblemSolvingSession:
             for a in self.agents
         ]
 
-        async def assess(ctx: SolverAgentContext) -> RoleAssessment:
+        async def assess(ctx: SolverAgentContext) -> Optional[RoleAssessment]:
+            """Assess agent, return None if agent fails"""
             async with self.semaphore:
-                assessment = await ctx.assess_role(
-                    timeout_sec=timeout_sec,
-                    log_interval_sec=log_interval_sec,
-                )
+                try:
+                    assessment = await ctx.assess_role(
+                        timeout_sec=timeout_sec,
+                        log_interval_sec=log_interval_sec,
+                    )
 
-                document = PydanticSchemaUtils.build_full_document(assessment)
+                    document = PydanticSchemaUtils.build_full_document(assessment)
 
-                await self.firestore_manager.write(
-                    collection=ROLE_ASSESSMENTS,
-                    document=document,
-                    document_id=assessment.assessment_id,
-                )
+                    await self.writer.write(
+                        collection=ROLE_ASSESSMENTS,
+                        document=document,
+                        document_id=assessment.assessment_id,
+                    )
 
-                file_path = (
-                    assessment_dir / f"{assessment.llm_id}_{assessment.problem_id}.json"
-                )
+                    file_path = (
+                        assessment_dir / f"{assessment.llm_id}_{assessment.problem_id}.json"
+                    )
 
-                file_path.write_text(
-                    json.dumps(document, indent=2, ensure_ascii=False),
-                    encoding="utf-8",
-                )
+                    file_path.write_text(
+                        json.dumps(document, indent=2, ensure_ascii=False),
+                        encoding="utf-8",
+                    )
 
-                return assessment
+                    return assessment
+                
+                except Exception as e:
+                    print(f"[AGENT EXCLUDED] {ctx.solver_id} failed: {type(e).__name__}")
+                    return None
 
         results = await asyncio.gather(*[assess(c) for c in contexts])
 
+        # Filter out failed agents
+        available_agents = [r for r in results if r is not None]
+
+        if len(available_agents) < 4:
+            raise RuntimeError(
+                f"Insufficient working agents: {len(available_agents)}/{len(results)} succeeded (need 4)"
+            )
+
+        print(f"[AVAILABLE] {len(available_agents)}/{len(results)} agents ready")
+
+        # Select top 4
         def overall_capability(a: RoleAssessment) -> float:
-            """Pick the 4 most capable agents regardless of role preference"""
             return max(a.judge_score, a.solver_score)
 
-        results.sort(key=overall_capability, reverse=True)
-        top_4 = results[:4]
+        available_agents.sort(key=overall_capability, reverse=True)
+        top_4 = available_agents[:4]
 
-        if len(top_4) < 4:
-            raise RuntimeError(f"Need at least 4 agents, got {len(results)}")
-
-        print(f"[SELECTED TOP 4 from {len(results)} agents]")
+        print(f"[SELECTED TOP 4]")
         for idx, a in enumerate(top_4, start=1):
-            print(f"  #{idx}: {a.llm_id} (best score: {overall_capability(a):.2f})")
+            print(f"  #{idx}: {a.llm_id} (score: {overall_capability(a):.2f})")
 
+        # Assign roles within top 4
         def judge_preference(a: RoleAssessment) -> float:
             """
             Weight judge preference by confidence.
@@ -220,7 +234,7 @@ class ProblemSolvingSession:
 
                 document = PydanticSchemaUtils.build_full_document(solution)
 
-                await self.firestore_manager.write(
+                await self.writer.write(
                     collection=SOLUTIONS,
                     document=document,
                     document_id=solution.solution_id,
@@ -274,7 +288,7 @@ class ProblemSolvingSession:
 
                 document = PydanticSchemaUtils.build_full_document(review)
 
-                await self.firestore_manager.write(
+                await self.writer.write(
                     collection=SOLUTION_REVIEWS,
                     document=document,
                     document_id=review.review_id,
@@ -331,7 +345,9 @@ class ProblemSolvingSession:
 
                 document = PydanticSchemaUtils.build_full_document(refined_solution)
 
-                await self.firestore_manager.write(
+                print("[REFINED SOLUTION DOCUMENT]", document)
+
+                await self.writer.write(
                     collection=REFINED_SOLUTIONS,
                     document=document,
                     document_id=refined_solution.refined_solution_id,
@@ -370,7 +386,7 @@ class ProblemSolvingSession:
 
         document = PydanticSchemaUtils.build_full_document(judgement)
 
-        await self.firestore_manager.write(
+        await self.writer.write(
             collection=FINAL_JUDGEMENTS,
             document=judgement.model_dump(),
             document_id=judgement.judgement_id,
@@ -394,4 +410,5 @@ class ProblemSolvingSession:
 
         print("[FINAL JUDGMENT COMPLETE]")
         print("WINNER:", judgement.winner_solver)
-        print("FINAL ANSWER:", winner_ctx.refined_solution.refined_answer)
+        print("FINAL ANSWER:")
+        print(winner_ctx.refined_solution.refined_answer)
