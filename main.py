@@ -45,6 +45,24 @@ def create_llm_configs():
             temperature=0.8,
             top_p=0.95,
         ),
+
+        # -----------------
+        # DeepSeek
+        # -----------------
+        LLMAgentConfig(
+            provider="deepseek",
+            llm_id="deepseek-chat",
+            model="deepseek-chat",
+            temperature=0.3,
+            top_p=0.9,
+        ),
+        LLMAgentConfig(
+            provider="deepseek",
+            llm_id="deepseek-reasoner",
+            model="deepseek-reasoner",
+            temperature=0.5,
+            top_p=0.95,
+        ),
     ]
 
 

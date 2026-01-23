@@ -3,6 +3,7 @@ from typing import Iterable, List
 from llm.agents.agent import LLMAgent
 from llm.agents.openai_agent import OpenAIAgent
 from llm.agents.gemini_agent import GeminiAgent
+from llm.agents.deepseek_agent import DeepSeekAgent
 from schemas.dataclass.agent_config import LLMAgentConfig
 from llm.clients.provider_registry import ProviderClientRegistry
 
@@ -21,6 +22,12 @@ class AgentFactory:
         if provider == "gemini":
             return GeminiAgent(
                 client=ProviderClientRegistry.get_gemini_client(),
+                config=config,
+            )
+        
+        if provider == "deepseek":
+            return DeepSeekAgent(
+                client=ProviderClientRegistry.get_deepseek_client(),
                 config=config,
             )
 

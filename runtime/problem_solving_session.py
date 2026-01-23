@@ -148,24 +148,41 @@ class ProblemSolvingSession:
 
                 return assessment
 
+
+
+
         results = await asyncio.gather(*[assess(c) for c in contexts])
 
-        if len(results) < 4:
-            raise RuntimeError("At least 4 agents required (3 solvers + 1 judge)")
+        def overall_capability(a: RoleAssessment) -> float:
+            """Pick the 4 most capable agents regardless of role preference"""
+            return max(a.judge_score, a.solver_score)
+        
+        results.sort(key=overall_capability, reverse=True)
+        top_4 = results[:4]
+
+        if len(top_4) < 4:
+            raise RuntimeError(f"Need at least 4 agents, got {len(results)}")
+        
+        print(f"[SELECTED TOP 4 from {len(results)} agents]")
+        for idx, a in enumerate(top_4, start=1):
+            print(f"  #{idx}: {a.llm_id} (best score: {overall_capability(a):.2f})")
 
         def judge_preference(a: RoleAssessment) -> float:
             """
             Weight judge preference by confidence.
-            Strong preferences (0.9 vs 0.1) beat weak ones (0.51 vs 0.49)
+            Strong preferences (0.9 vs 0.1) beat weak ones (0.51 vs 0.49).
             """
             score_diff = a.judge_score - a.solver_score
             confidence = abs(score_diff)
             return score_diff * (1 + confidence)
 
-        results.sort(key=judge_preference, reverse=True)
+        top_4.sort(key=judge_preference, reverse=True)
 
-        judge_id = results[0].llm_id
-        solver_ids = [a.llm_id for a in results[1:4]]
+        judge_id = top_4[0].llm_id
+        solver_ids = [a.llm_id for a in top_4[1:4]]
+
+
+
 
         print("[ROLE ASSIGNMENT]")
         print(f"  Judge : {judge_id}")

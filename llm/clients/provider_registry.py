@@ -24,3 +24,15 @@ class ProviderClientRegistry:
                 raise RuntimeError("GOOGLE_API_KEY not set")
             cls._clients["gemini"] = genai.Client(api_key=api_key)
         return cls._clients["gemini"]
+
+    @classmethod
+    def get_deepseek_client(cls) -> OpenAI:
+        if "deepseek" not in cls._clients:
+            api_key = os.getenv("DEEPSEEK_API_KEY")
+            if not api_key:
+                raise RuntimeError("DEEPSEEK_API_KEY not set")
+            cls._clients["deepseek"] = OpenAI(
+                api_key=api_key,
+                base_url="https://api.deepseek.com"
+            )
+        return cls._clients["deepseek"]
