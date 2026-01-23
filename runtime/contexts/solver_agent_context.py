@@ -172,14 +172,6 @@ class SolverAgentContext:
 
         self.peer_reviews.append(review)
 
-        print(
-            f"[REVIEW RECEIVED] "
-            f"solver={self.solver_id} "
-            f"from={review.reviewer_id} "
-            f"assessment={review.overall_assessment} "
-            f"confidence={review.confidence:.2f}"
-        )
-
     # -------------------------
     # Stage 3: Refinement
     # -------------------------

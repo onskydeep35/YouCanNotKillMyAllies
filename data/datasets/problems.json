@@ -158,5 +158,29 @@
     "difficulty": "easy",
     "statement": "In a magical swamp, there are two species of talking amphibians: toads whose statements are always true, and frogs whose statements are always false.\n\nFour amphibians, Brian, Chris, LeRoy, and Mike live together in this swamp, and they make the following statements:\n\nBrian: \"Mike and I are different species.\"\nChris: \"LeRoy is a frog.\"\nLeRoy: \"Chris is a frog.\"\nMike: \"Of the four of us, at least two are toads.\"\n\nHow many of these amphibians are frogs?",
     "ground_answer": "3"
+  },
+  {
+    "problem_id": "problem_021",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Rankings and Performance Metrics",
+    "difficulty": "hard",
+    "statement": "Let n be a positive integer. A class of n students run n races, in each of which they are ranked with no draws. A student is eligible for a rating (a, b) for positive integers a and b if they come in the top b places in at least a of the races. Their final score is the maximum possible value of a − b across all ratings for which they are eligible. Find the maximum possible sum of all the scores of the n students when n = 1000.",
+    "ground_answer": "499,500"
+  },
+  {
+    "problem_id": "problem_022",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Rankings and Performance Metrics",
+    "difficulty": "hard",
+    "statement": "Let n be a positive integer. A class of n students run n races, in each of which they are ranked with no draws. A student is eligible for a rating (a, b) for positive integers a and b if they come in the top b places in at least a of the races. Their final score is the maximum possible value of a − b across all ratings for which they are eligible. Find the maximum possible sum of all the scores of the n students when n = 10.",
+    "ground_answer": "45"
+  },
+  {
+    "problem_id": "problem_023",
+    "category": "Mathematical/Logical Reasoning",
+    "subcategory": "Invariants and Parity Arguments",
+    "difficulty": "hard",
+    "statement": "Let m and n be positive integers greater than 1. In each unit square of an m × n grid lies a coin with its tail side up. A move consists of selecting a 2 × 2 square in the grid, flipping the coins in the top-left and bottom-right unit squares, and flipping the coin in either the top-right or bottom-left unit square. Determine all pairs (m, n) for which it is possible that every coin shows head-side up after a finite number of moves.",
+    "ground_answer": "(m, n) such that 3 divides m * n"
   }
 ]

@@ -3,7 +3,6 @@ from pathlib import Path
 from config import *
 from runtime.app import ProblemSolvingApp
 from schemas.dataclass.agent_config import LLMAgentConfig
-from llm.prompts.prompts import *
 
 def create_llm_configs():
     """
@@ -47,22 +46,22 @@ def create_llm_configs():
         ),
 
         # -----------------
-        # DeepSeek
-        # -----------------
-        LLMAgentConfig(
-            provider="deepseek",
-            llm_id="deepseek-chat",
-            model="deepseek-chat",
-            temperature=0.3,
-            top_p=0.9,
-        ),
-        LLMAgentConfig(
-            provider="deepseek",
-            llm_id="deepseek-reasoner",
-            model="deepseek-reasoner",
-            temperature=0.5,
-            top_p=0.95,
-        ),
+        # # DeepSeek
+        # # -----------------
+        # LLMAgentConfig(
+        #     provider="deepseek",
+        #     llm_id="deepseek-chat",
+        #     model="deepseek-chat",
+        #     temperature=0.3,
+        #     top_p=0.9,
+        # ),
+        # LLMAgentConfig(
+        #     provider="deepseek",
+        #     llm_id="deepseek-reasoner",
+        #     model="deepseek-reasoner",
+        #     temperature=0.5,
+        #     top_p=0.95,
+        # ),
     ]
 
 
@@ -78,6 +77,7 @@ async def main():
     await app.run(
         timeout_sec=DEFAULT_TIMEOUT_SEC,
         log_interval_sec=LOG_INTERVAL_SEC,
+        max_concurrent_sessions=7,
     )
 
 

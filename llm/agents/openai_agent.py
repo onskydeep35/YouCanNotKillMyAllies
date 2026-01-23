@@ -32,12 +32,4 @@ class OpenAIAgent(LLMAgent):
             **gen_kwargs,  # ← generic kwargs
         )
 
-        print(
-            f"\n[RAW OPENAI OUTPUT] "
-            f"agent={self.config.llm_id} "
-            f"method={method_type} "
-            f"instance={instance_id}\n"
-            f"{response.output_text}\n"
-        )
-
         return response.output_parsed

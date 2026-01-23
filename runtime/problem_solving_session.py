@@ -33,14 +33,14 @@ class ProblemSolvingSession:
         run_id: str,
         problem: Problem,
         agents: List[LLMAgent],
-        writer: FirestoreManager,
+        firestore_manager: FirestoreManager,
         output_dir: Path,
-        max_concurrency: int = 4,
+        max_concurrency: int = 6,
     ):
         self.run_id = run_id
         self.problem = problem
         self.agents = agents
-        self.writer = writer
+        self.firestore_manager = firestore_manager
         self.output_dir = output_dir
         self.semaphore = asyncio.Semaphore(max_concurrency)
 
@@ -93,7 +93,7 @@ class ProblemSolvingSession:
             "timestamp": datetime.now(),
         }
 
-        await self.writer.write(
+        await self.firestore_manager.write(
             collection=RUNS, document=document, document_id=self.run_id
         )
 
@@ -131,7 +131,7 @@ class ProblemSolvingSession:
 
                 document = PydanticSchemaUtils.build_full_document(assessment)
 
-                await self.writer.write(
+                await self.firestore_manager.write(
                     collection=ROLE_ASSESSMENTS,
                     document=document,
                     document_id=assessment.assessment_id,
@@ -220,7 +220,7 @@ class ProblemSolvingSession:
 
                 document = PydanticSchemaUtils.build_full_document(solution)
 
-                await self.writer.write(
+                await self.firestore_manager.write(
                     collection=SOLUTIONS,
                     document=document,
                     document_id=solution.solution_id,
@@ -274,7 +274,7 @@ class ProblemSolvingSession:
 
                 document = PydanticSchemaUtils.build_full_document(review)
 
-                await self.writer.write(
+                await self.firestore_manager.write(
                     collection=SOLUTION_REVIEWS,
                     document=document,
                     document_id=review.review_id,
@@ -331,9 +331,7 @@ class ProblemSolvingSession:
 
                 document = PydanticSchemaUtils.build_full_document(refined_solution)
 
-                print("[REFINED SOLUTION DOCUMENT]", document)
-
-                await self.writer.write(
+                await self.firestore_manager.write(
                     collection=REFINED_SOLUTIONS,
                     document=document,
                     document_id=refined_solution.refined_solution_id,
@@ -372,7 +370,7 @@ class ProblemSolvingSession:
 
         document = PydanticSchemaUtils.build_full_document(judgement)
 
-        await self.writer.write(
+        await self.firestore_manager.write(
             collection=FINAL_JUDGEMENTS,
             document=judgement.model_dump(),
             document_id=judgement.judgement_id,
@@ -396,5 +394,4 @@ class ProblemSolvingSession:
 
         print("[FINAL JUDGMENT COMPLETE]")
         print("WINNER:", judgement.winner_solver)
-        print("FINAL ANSWER:")
-        print(winner_ctx.refined_solution.refined_answer)
+        print("FINAL ANSWER:", winner_ctx.refined_solution.refined_answer)

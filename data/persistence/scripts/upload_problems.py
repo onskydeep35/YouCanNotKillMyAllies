@@ -14,7 +14,7 @@ if not cred_env:
     raise RuntimeError("FIREBASE_CREDENTIALS not set")
 
 # ---------- Resolve absolute path ----------
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = Path(__file__).resolve().parents[3]
 
 cred_path = BASE_DIR / cred_env
 
@@ -35,7 +35,7 @@ with open("../../datasets/problems.json", "r", encoding="utf-8") as f:
 collection_ref = db.collection("Problems")
 
 for problem in problems:
-    problem_id = problem["id"]  # use stable ID
+    problem_id = problem["problem_id"]  # use stable ID
     collection_ref.document(problem_id).set(problem)
 
 print(f"✅ Uploaded {len(problems)} problems to Firestore")

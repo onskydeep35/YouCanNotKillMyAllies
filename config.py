@@ -8,11 +8,11 @@ POST_CALL_DELAY_SEC = 5
 LOG_INTERVAL_SEC = 10
 
 # Concurrent Processing
-MAX_CONCURRENCY = 4
+MAX_CONCURRENCY = 5
 
 # Problem Selection (for testing)
 PROBLEMS_SKIP = 0
-PROBLEMS_TAKE = None  # None = all problems
+PROBLEMS_TAKE = 23
 
 # Output Paths
 DEFAULT_OUTPUT_DIR = "data/output"

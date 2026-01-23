@@ -34,12 +34,4 @@ class GeminiAgent(LLMAgent):
             },
         )
 
-        print(
-            f"\n[RAW GEMINI OUTPUT] "
-            f"agent={self.config.llm_id} "
-            f"method={method_type} "
-            f"instance={instance_id}\n"
-            f"{response.text}\n"
-        )
-
         return output_model.model_validate_json(response.text)
