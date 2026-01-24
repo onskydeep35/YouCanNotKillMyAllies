@@ -8,6 +8,7 @@ SOLUTION_REVIEWS = "SolutionReviews"
 REFINED_SOLUTIONS = "RefinedSolutions"
 FINAL_JUDGEMENTS = "FinalJudgements"
 METRICS = "Metrics"
+PROBLEMS = "Problems"
 
 
 class FirestoreManager:
@@ -58,3 +59,19 @@ class FirestoreManager:
             results.append(data)
 
         return results
+
+    async def update_document(
+            self,
+            *,
+            collection: str,
+            document_id: str,
+            updates: Dict[str, Any],
+    ) -> None:
+        """
+        Update fields of an existing document.
+        """
+        if not document_id:
+            raise ValueError("document_id must be provided")
+
+        doc_ref = self.db.collection(collection).document(document_id)
+        doc_ref.update(updates)
