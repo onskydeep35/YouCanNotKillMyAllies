@@ -118,8 +118,8 @@ async def main() -> None:
         how="left",
         suffixes=("", "_role"),
     )
-    write_in_file(df_join_1, "../metrics/debug/join1.tsv")
-    write_in_file(df_final, "../metrics/debug/final.tsv")
+    write_in_file(df_join_1, "../../metrics/debug/join1.tsv")
+    write_in_file(df_final, "../../metrics/debug/final.tsv")
 
     df_join_2 = df_join_1.merge(
         df_solutions,
@@ -149,7 +149,7 @@ async def main() -> None:
 
     # optional: drop helper column if you truly want nothing else
     df_join_4 = df_join_3.drop(columns=["winner_solver_id"])
-    write_in_file(df_join_4, "../metrics/debug/grounded.tsv")
+    write_in_file(df_join_4, "../../metrics/debug/grounded.tsv")
 
     df_llm_summary = (
         df_join_3
@@ -187,7 +187,7 @@ async def main() -> None:
 
     df_llm_summary["total"] = TOTAL
     df_llm_summary["judge_role"] = TOTAL - df_llm_summary["solver_role"]
-    write_in_file(df_llm_summary, "../metrics/agent_level_metrics.tsv")
+    write_in_file(df_llm_summary, "../../metrics/agent_level_metrics.tsv")
 
     TOTAL_PROBLEMS = df_join_4["problem_id"].nunique()
 
@@ -208,7 +208,7 @@ async def main() -> None:
         "refined_solution_accuracy": round(refined_solution_accuracy, 3),
         "judged_solution_accuracy": round(judged_solution_accuracy, 3),
     }])
-    write_in_file(df_solution_accuracy_metrics, "../metrics/overall_accuracy_metrics.tsv")
+    write_in_file(df_solution_accuracy_metrics, "../../metrics/overall_accuracy_metrics.tsv")
 
     true_to_false_rate = (
         (df_join_4["is_correct_answer"] & ~df_join_4["is_correct_answer_refined"])
@@ -224,7 +224,7 @@ async def main() -> None:
         "true_to_false_rate": round(true_to_false_rate, 3),
         "false_to_true_rate": round(false_to_true_rate, 3),
     }])
-    write_in_file(df_refinement_transition_metrics, "../metrics/refinement_transition_metrics.tsv")
+    write_in_file(df_refinement_transition_metrics, "../../metrics/refinement_transition_metrics.tsv")
 
     consensus_rate3 = (
         df_join_4
@@ -249,7 +249,7 @@ async def main() -> None:
         "consensus_rate2": round(consensus_rate2, 3),
         "consensus_rate1": round(consensus_rate1, 3),
     }])
-    write_in_file(df_refinement_transition_metrics, "../metrics/consensus_metrics.tsv")
+    write_in_file(df_refinement_transition_metrics, "../../metrics/consensus_metrics.tsv")
 
     judge_eval = (
         df_join_4
@@ -293,7 +293,7 @@ async def main() -> None:
         "judge_disagreement_cases": judge_disagreement_cases,
     }])
 
-    write_in_file(df_refinement_transition_metrics, "../metrics/judge_accuracy_dissagreement.tsv")
+    write_in_file(df_refinement_transition_metrics, "../../metrics/judge_accuracy_dissagreement.tsv")
 
 
 if __name__ == "__main__":
