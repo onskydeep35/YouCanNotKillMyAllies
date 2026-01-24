@@ -1,0 +1,5 @@
+llm_id	solver_role	correct_answers_count	refined_correct_answers_count	judge_selected_agent_count	judge_score_mean	solver_score_mean	judge_selected_agent_correct_answer_count	true_to_false_change	false_to_true_change	total	judge_role
+gemini-3-flash	18	15	15	7	0.89	0.98	6	0	0	22	4
+gemini-3-pro	14	12	12	6	0.89	0.94	6	0	0	22	8
+gpt-4.1	17	15	16	2	0.92	0.98	2	0	1	22	5
+gpt-5-mini	17	13	13	6	0.65	0.98	3	0	0	22	5

@@ -2,6 +2,7 @@ from schemas.pydantic.input.problem import *
 from schemas.pydantic.input.peer_review_input import PeerReviewInput
 from schemas.pydantic.input.solution_refinement_input import SolutionRefinementInput
 from schemas.pydantic.input.final_judgement_input import *
+from schemas.pydantic.input.answer_comparision_input import *
 from schemas.pydantic.output.problem_solution import *
 from schemas.pydantic.output.problem_solution_review import *
 from schemas.utilities.pydantic_schema_utils import PydanticSchemaUtils
@@ -595,6 +596,71 @@ FINAL_JUDGMENT_SYSTEM_PROMPT = f"""
     - The judgment MUST be fully justified by the provided solver contexts
   </global_rules>
 </system>
+""".strip()
+
+
+def build_final_judgement_user_prompt(
+    *,
+    final_input: FinalJudgementInput,
+) -> str:
+    final_input_json = final_input.model_dump(mode="json")
+
+    return f"""
+<user_input>
+  The following JSON object is the authoritative input for this task.
+  It conforms to the FinalJudgementInput schema.
+
+  You must rely ONLY on this JSON to perform the judgment.
+
+  <FinalJudgementInput>
+  {json.dumps(final_input_json, indent=2, ensure_ascii=False)}
+  </FinalJudgementInput>
+</user_input>
+""".strip()
+
+ANSWER_CORRECTNESS_PROMPT = """
+<system_contract>
+  <role>
+    You are a strict answer-verification engine.
+    Your only task is to determine whether a proposed solution answer
+    is correct with respect to the given ground-truth answer.
+  </role>
+
+  <rules>
+    <rule>You MUST output a single valid JSON object.</rule>
+    <rule>The output MUST conform exactly to the AnswerCorrectnessJudgement schema.</rule>
+    <rule>Return only true or false in the is_correct field.</rule>
+    <rule>Do NOT include explanations, reasoning, or additional fields.</rule>
+    <rule>If answers differ in wording but are mathematically or logically equivalent, treat them as correct.</rule>
+    <rule>If correctness cannot be determined with certainty, return false.</rule>
+  </rules>
+
+  <output_schema>
+    {
+      "is_correct": boolean
+    }
+  </output_schema>
+</system_contract>
+""".strip()
+
+def build_final_judgement_user_prompt(
+    comparison: AnswerComparisonInput,
+) -> str:
+    comparison_json = comparison.model_dump(mode="json")
+
+    return f"""
+<task>
+  
+<user_input>
+  The following JSON object is the authoritative input for this task.
+  It conforms to the AnswerComparisonInput schema.
+
+  Determine whether the solution answer is correct (contextually same as grounding answer).
+
+  <AnswerComparisonInput>
+  {json.dumps(comparison_json, indent=2, ensure_ascii=False)}
+  </AnswerComparisonInput>
+</user_input>
 """.strip()
 
 

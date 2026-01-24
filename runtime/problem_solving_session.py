@@ -372,7 +372,7 @@ class ProblemSolvingSession:
 
         await self.firestore_manager.write(
             collection=FINAL_JUDGEMENTS,
-            document=judgement.model_dump(),
+            document=document,
             document_id=judgement.judgement_id,
         )
 

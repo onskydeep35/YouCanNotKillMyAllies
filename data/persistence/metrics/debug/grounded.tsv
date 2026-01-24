@@ -1,0 +1,67 @@
+problem_id	ground_answer	run_id	llm_id	judge_score	solver_score	solution_id	is_correct_answer	answer	parent_solution_id	is_correct_answer_refined	refined_answer	is_judge_selected_context
+problem_001	2	648073e146864e848958ab316d0c216a	gpt-5-mini	0.35	1.0	5820b48d4a5145e98e417f7cbecfcd4e	True	2	5820b48d4a5145e98e417f7cbecfcd4e	True	2	True
+problem_001	2	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	1f99f208e39d4e0da153cd84e774649e	True	2	1f99f208e39d4e0da153cd84e774649e	True	2	False
+problem_001	2	648073e146864e848958ab316d0c216a	gemini-3-pro	0.95	0.95	35baf9c10bfa4fa8a403ac1ebf489edb	True	2	35baf9c10bfa4fa8a403ac1ebf489edb	True	2	False
+problem_002	3	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	1.0	dfb8ad714ee04214aa4ef2dc9b8576e1	True	3	dfb8ad714ee04214aa4ef2dc9b8576e1	True	3	True
+problem_002	3	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	1b82d5613e2b421696453ec6270b4937	True	3	1b82d5613e2b421696453ec6270b4937	True	3	False
+problem_002	3	648073e146864e848958ab316d0c216a	gemini-3-pro	0.9	0.95	7bf005610d2a44f3910fb555db3459ed	True	3	7bf005610d2a44f3910fb555db3459ed	True	3	False
+problem_003	18	648073e146864e848958ab316d0c216a	gemini-3-flash	0.8	0.9	574e393609734527a76105fd70bd63d4	True	18	574e393609734527a76105fd70bd63d4	True	18	False
+problem_003	18	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	641c4b5d30f04cdeb2c6756fcc39b80a	False	23	641c4b5d30f04cdeb2c6756fcc39b80a	True	18	False
+problem_003	18	648073e146864e848958ab316d0c216a	gpt-5-mini	0.85	0.95	ca4cd5021ccf4c4b911b11e63e5b455b	False	0 or 18	ca4cd5021ccf4c4b911b11e63e5b455b	False	0 or 18	True
+problem_004	17	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	5df5db8656004e05a4da9a81bd20c2a9	True	17	5df5db8656004e05a4da9a81bd20c2a9	True	17	False
+problem_004	17	648073e146864e848958ab316d0c216a	gpt-5-mini	0.25	0.95	56f3a3dd94fd4a3b9c178835915ac9fc	True	17th day	56f3a3dd94fd4a3b9c178835915ac9fc	True	17th day	False
+problem_004	17	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	1.0	76139d5dd3054f3cb6aa938beef21924	True	17	76139d5dd3054f3cb6aa938beef21924	True	17	True
+problem_005	no	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	2a6123bd9e2941e6929b12f3adfa605c	True	No	2a6123bd9e2941e6929b12f3adfa605c	True	No	False
+problem_005	no	648073e146864e848958ab316d0c216a	gpt-5-mini	0.8	1.0	fe9aefe1577244a995ae87eeac2242ec	True	No	fe9aefe1577244a995ae87eeac2242ec	True	No	True
+problem_005	no	648073e146864e848958ab316d0c216a	gemini-3-pro	0.95	0.95	01a16170b0f64c1da7ec99637415f7f8	True	No	01a16170b0f64c1da7ec99637415f7f8	True	No	False
+problem_006	Player 1	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	1.0	4a9737d7faca48e796375659db68345c	True	Player 1	4a9737d7faca48e796375659db68345c	True	Player 1	False
+problem_006	Player 1	648073e146864e848958ab316d0c216a	gpt-5-mini	0.2	1.0	4aaefc98530b4c42ab7ebceec2dee7bc	True	Player 1	4aaefc98530b4c42ab7ebceec2dee7bc	True	Player 1	False
+problem_006	Player 1	648073e146864e848958ab316d0c216a	gemini-3-pro	0.9	0.95	f5b608dfd5f24f39888244fd770844a0	True	Player 1	f5b608dfd5f24f39888244fd770844a0	True	Player 1	True
+problem_007	1	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	0.95	bb620210cdf64054ae556fc4577b2285	True	1	bb620210cdf64054ae556fc4577b2285	True	1	True
+problem_007	1	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	bbcd66c3834b4a88949751d2f4acab15	True	1	bbcd66c3834b4a88949751d2f4acab15	True	1	False
+problem_007	1	648073e146864e848958ab316d0c216a	gemini-3-pro	0.95	0.95	985c783d932f4034958ba6b9c837872a	True	1	985c783d932f4034958ba6b9c837872a	True	1	False
+problem_008	1	648073e146864e848958ab316d0c216a	gpt-5-mini	0.6	0.98	cff227d313644998bc853ae3d08b58aa	True	1	cff227d313644998bc853ae3d08b58aa	True	1 (provided each bag contains at least 512 coins and the scale reports exact weight)	False
+problem_008	1	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	1.0	8ac604b20ba940848092d22b99780259	True	1	8ac604b20ba940848092d22b99780259	True	1	True
+problem_008	1	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	436099512b754df5af37b4b971a9bf62	True	1	436099512b754df5af37b4b971a9bf62	True	1	False
+problem_009	Levan	648073e146864e848958ab316d0c216a	gpt-5-mini	0.7	0.95	bf4c61edae814f8ab8fb53f2d2358dc2	True	Levan	bf4c61edae814f8ab8fb53f2d2358dc2	True	Levan	False
+problem_009	Levan	648073e146864e848958ab316d0c216a	gemini-3-pro	0.9	0.95	59129adee55e4e16ac2717f5dc1d2fb1	True	Levan	59129adee55e4e16ac2717f5dc1d2fb1	True	Levan	False
+problem_009	Levan	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	0.95	7528a8aee6384a2785f104639b9debe0	True	Levan	7528a8aee6384a2785f104639b9debe0	True	Levan	True
+problem_010	15	648073e146864e848958ab316d0c216a	gpt-5-mini	0.1	0.95	a99663484d5f4170a1933c123a64f8ee	False	7.5 minutes	a99663484d5f4170a1933c123a64f8ee	False	The problem is ambiguous. If cooking a single side may be interrupted and resumed (preemptive), the minimum time is 7.5 minutes. If each 5-minute cook must be done as an uninterrupted atomic task (non-preemptive), the minimum time is 10 minutes.	True
+problem_010	15	648073e146864e848958ab316d0c216a	gemini-3-pro	0.9	0.95	f208014e14e6487b88aa8251fa42ca9d	False	10 minutes	f208014e14e6487b88aa8251fa42ca9d	False	10 minutes	False
+problem_010	15	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	0.95	4e671c173c6a4866b4b48fcd9e9d1780	False	7.5 minutes	4e671c173c6a4866b4b48fcd9e9d1780	False	7.5 minutes	False
+problem_011	no	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	1.0	9ccf06ac4fe1442b89f6925226b64c58	False	Yes	9ccf06ac4fe1442b89f6925226b64c58	False	Yes	False
+problem_011	no	648073e146864e848958ab316d0c216a	gpt-5-mini	0.9	1.0	5e2874a33f6b4ec9a5ecf27f97a69bdf	False	Yes	5e2874a33f6b4ec9a5ecf27f97a69bdf	False	It depends: Yes if the northward 100 km leg does not reach or cross the North Pole (i.e., if the start is at least 100 km from the North Pole). If the north leg crosses the North Pole (start is within 100 km of the Pole but not exactly at it) the helicopter will not return to the starting point. If the north leg ends exactly at the Pole the east/west instructions are undefined and the outcome is ambiguous.	True
+problem_011	no	648073e146864e848958ab316d0c216a	gemini-3-pro	0.9	0.9	9fa9f7789e66484c8d9f5dc044d919a5	False	Yes	9fa9f7789e66484c8d9f5dc044d919a5	False	Yes, provided the initial 100 km northward flight does not reach or cross the North Pole.	False
+problem_012	2971	648073e146864e848958ab316d0c216a	gemini-3-pro	0.85	0.95	f94480c32ab048dda2ac333f03540f23	True	2971	f94480c32ab048dda2ac333f03540f23	True	2971	True
+problem_012	2971	648073e146864e848958ab316d0c216a	gpt-4.1	0.92	0.97	821980ca757e4a53a577ef71b376d700	True	2971	821980ca757e4a53a577ef71b376d700	True	2971	False
+problem_012	2971	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	0.95	55b074ec919445acb4e47182ae18cc88	True	2971	55b074ec919445acb4e47182ae18cc88	True	2971	False
+problem_013	pi/6	648073e146864e848958ab316d0c216a	gemini-3-pro	0.9	0.95	f6f7f2e567df43578e3fe94784c00cf7	True	π/6	f6f7f2e567df43578e3fe94784c00cf7	True	π/6	True
+problem_013	pi/6	648073e146864e848958ab316d0c216a	gpt-5-mini	0.7	0.95	2c9ce0077bee47b980123c9bd0506857	True	pi/6	2c9ce0077bee47b980123c9bd0506857	True	pi/6	False
+problem_013	pi/6	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	0.95	322652e6d374498ca850775104193eaf	True	π/6	322652e6d374498ca850775104193eaf	True	π/6	False
+problem_014	1/4	648073e146864e848958ab316d0c216a	gemini-3-pro	0.9	0.95	7001ba3c42274f3c8d7dad8518bbd3db	True	1/4	7001ba3c42274f3c8d7dad8518bbd3db	True	1/4	True
+problem_014	1/4	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	c2866b49144b48bda49f68b1e62193f6	True	1/4	c2866b49144b48bda49f68b1e62193f6	True	1/4	False
+problem_014	1/4	648073e146864e848958ab316d0c216a	gemini-3-flash	0.8	1.0	043fc672ec314b039d265db7cb29fba4	True	1/4	043fc672ec314b039d265db7cb29fba4	True	1/4	False
+problem_015	3	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	1.0	e014d787dfbf43e38e21028b62b4d7db	True	3	e014d787dfbf43e38e21028b62b4d7db	True	3	False
+problem_015	3	648073e146864e848958ab316d0c216a	gpt-5-mini	0.35	0.95	9527b57f30a544e184a59c4fc771baac	True	3	9527b57f30a544e184a59c4fc771baac	True	3	False
+problem_015	3	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	ef64550ae04b416e9e691212020fe5a9	True	3	ef64550ae04b416e9e691212020fe5a9	True	3	True
+problem_016	B	44b6ef7363d0491e903fe248294a74b7	gpt-4.1	0.9	1.0	6cb9dc0cae064e47b6c0da11bf265434	True	A: Knight, B: Spy, C: Knave	6cb9dc0cae064e47b6c0da11bf265434	True	A: Knight, B: Spy, C: Knave	False
+problem_016	B	44b6ef7363d0491e903fe248294a74b7	gemini-3-flash	0.9	1.0	cc8b007c641f41fbb613a74a8a890e88	True	A is the knight, B is the spy, and C is the knave	cc8b007c641f41fbb613a74a8a890e88	True	A is the knight, B is the spy, and C is the knave	False
+problem_016	B	44b6ef7363d0491e903fe248294a74b7	gpt-5-mini	0.9	1.0	543265710bb84a1ca94f0de00c01729f	True	A: Knight, B: Spy, C: Knave	543265710bb84a1ca94f0de00c01729f	True	A: Knight, B: Spy, C: Knave	True
+problem_017	13/27	648073e146864e848958ab316d0c216a	gpt-5-mini	0.9	1.0	c4f75044a09042478da0def340ec0fe9	True	13/27	c4f75044a09042478da0def340ec0fe9	True	13/27	False
+problem_017	13/27	648073e146864e848958ab316d0c216a	gemini-3-flash	0.9	0.9	19f1987cd5c94e69869654762a25fbe7	True	13/27	19f1987cd5c94e69869654762a25fbe7	True	13/27	True
+problem_017	13/27	648073e146864e848958ab316d0c216a	gpt-4.1	0.95	1.0	6fdc0d26b8bb45d79ada3eae71ca4394	True	13/27	6fdc0d26b8bb45d79ada3eae71ca4394	True	13/27	False
+problem_018	0.5	44b6ef7363d0491e903fe248294a74b7	gpt-4.1	0.9	0.95	df57e1d5fa3d4256a89ff1bc36909cf9	True	0.5	df57e1d5fa3d4256a89ff1bc36909cf9	True	0.5	True
+problem_018	0.5	44b6ef7363d0491e903fe248294a74b7	gpt-5-mini	0.9	1.0	260658587ec947e98d15435807175ead	True	0.5	260658587ec947e98d15435807175ead	True	0.5	False
+problem_018	0.5	44b6ef7363d0491e903fe248294a74b7	gemini-3-flash	0.9	1.0	76a330ddd2954d4a9e1b67d189520db2	True	0.5	76a330ddd2954d4a9e1b67d189520db2	True	0.5	False
+problem_019	34	44b6ef7363d0491e903fe248294a74b7	gpt-5-mini	0.9	1.0	079c89e0f39846dabd91cdc1a8f99186	False	33	079c89e0f39846dabd91cdc1a8f99186	False	33	False
+problem_019	34	44b6ef7363d0491e903fe248294a74b7	gemini-3-flash	0.9	1.0	f053c73ce00242089e21a9626351e13a	False	33	f053c73ce00242089e21a9626351e13a	False	33	True
+problem_019	34	44b6ef7363d0491e903fe248294a74b7	gpt-4.1	0.9	1.0	09d4a8bb8ea34ea0a94adb28acc05b24	False	33	09d4a8bb8ea34ea0a94adb28acc05b24	False	33	False
+problem_021	499,500	9596f230c36d49adb2ea1242f3f13ecf	gpt-4.1	0.85	0.95	1056b0c386f94c5fb9631a3b091889a6	True	499500	1056b0c386f94c5fb9631a3b091889a6	True	499500	False
+problem_021	499,500	9596f230c36d49adb2ea1242f3f13ecf	gemini-3-pro	0.85	0.95	b4eaad07a2614b34a0ecf9b89b0ed13a	True	499500	b4eaad07a2614b34a0ecf9b89b0ed13a	True	499500	True
+problem_021	499,500	9596f230c36d49adb2ea1242f3f13ecf	gemini-3-flash	0.85	0.95	1be22744c5614a6ab2eb4b3e253bcd20	True	499500	1be22744c5614a6ab2eb4b3e253bcd20	True	499500	False
+problem_022	45	9596f230c36d49adb2ea1242f3f13ecf	gemini-3-pro	0.85	0.95	18ac3c7c8b7547d1b82a59626714a9be	True	45	18ac3c7c8b7547d1b82a59626714a9be	True	45	False
+problem_022	45	9596f230c36d49adb2ea1242f3f13ecf	gpt-5-mini	0.8	1.0	1ce346944dd64d6fb251dd2f8239d740	True	45	1ce346944dd64d6fb251dd2f8239d740	True	45	False
+problem_022	45	9596f230c36d49adb2ea1242f3f13ecf	gpt-4.1	0.8	0.9	e1d0d54f474945a78f85fd806869b310	True	45	e1d0d54f474945a78f85fd806869b310	True	45	False
+problem_023	(m, n) such that 3 divides m * n	9596f230c36d49adb2ea1242f3f13ecf	gemini-3-flash	0.9	1.0	8c9e20f0343e405f81df9ec43041e7ff	True	3|m \text{ or } 3|n	8c9e20f0343e405f81df9ec43041e7ff	True	3|m \text{ or } 3|n	False
+problem_023	(m, n) such that 3 divides m * n	9596f230c36d49adb2ea1242f3f13ecf	gemini-3-pro	0.8	0.9	c0cc33535640481b882ec711da6d2cfd	True	All pairs (m, n) such that 3 divides m or 3 divides n	c0cc33535640481b882ec711da6d2cfd	True	All pairs (m, n) such that 3 divides m or 3 divides n	True
+problem_023	(m, n) such that 3 divides m * n	9596f230c36d49adb2ea1242f3f13ecf	gpt-5-mini	0.9	1.0	06a8739cacae48afbbdca7f37bc4cba9	True	3|m \text{ or } 3|n	06a8739cacae48afbbdca7f37bc4cba9	True	3|m \text{ or } 3|n	False

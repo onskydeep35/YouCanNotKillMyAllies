@@ -32,7 +32,7 @@ class LLMAgent(ABC):
             output_model=output_model,
             timeout_sec=timeout_sec,
             log_interval_sec=log_interval_sec,
-            instance_id=problem.problem_id,
+            instance_id="none",
             method_type=method_type,
             max_retries=max_retries,
         )

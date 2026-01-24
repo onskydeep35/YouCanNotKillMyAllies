@@ -1,0 +1,5 @@
+llm_id	refined_solution_count	refined_correct_count	answer_changed_count
+gemini-3-flash	20	17	0
+gemini-3-pro	16	14	1
+gpt-4.1	15	14	1
+gpt-5-mini	15	11	3
